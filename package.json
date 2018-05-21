@@ -1,0 +1,35 @@
+{
+  "name": "jade",
+  "version": "0.0.1",
+  "description": "Justin and Dave's Engine - A 2D Game Engine",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/woldie/JaDE.git"
+  },
+  "keywords": [
+    "roguelike",
+    "2dgame"
+  ],
+  "author": "woldie",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/woldie/JaDE/issues"
+  },
+  "homepage": "https://github.com/woldie/JaDE#readme",
+  "devDependencies": {
+    "@pixi/utils": "^5.0.0-alpha.2",
+    "gulp": "^3.9.1",
+    "html-webpack-plugin": "^3.2.0",
+    "webpack-stream": "^4.0.3"
+  },
+  "dependencies": {
+    "@pixi/app": "^5.0.0-alpha.2",
+    "install": "^0.11.0",
+    "jquery": "^3.3.1",
+    "npm": "^6.0.1"
+  }
+}
