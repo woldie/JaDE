@@ -1,0 +1,14 @@
+{
+  "name": "expectant",
+  "version": "0.0.1",
+  "description": "Expectant assertion library, a handy wrapper around the Proclaim assertion library",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "woldie",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "proclaim": "^3.4.2"
+  }
+}

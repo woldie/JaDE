@@ -48,6 +48,9 @@ function testStory(storyJson) {
 
     // Generate story text - loop through available content
     while (story.canContinue) {
+      $storyContainer.append("<p>variablesState: npcName=" + story.state.variablesState.$("npcName") + "</p>");
+      $storyContainer.append("<p>variablesState: someUnsetTrigger=" + story.state.variablesState.$("someUnsetTrigger") + "</p>");
+      story.state.variablesState.$("npcName", "davew");
 
       // Get ink to generate the next paragraph
       var paragraphText = story.Continue();

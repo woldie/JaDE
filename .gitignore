@@ -65,3 +65,4 @@ typings/
 
 # JaDE stuff
 dist/
+packages/game/dialogue/*.json

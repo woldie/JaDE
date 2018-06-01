@@ -1,0 +1,42 @@
+{
+  "name": "game",
+  "version": "0.0.1",
+  "description": "Playable game engine",
+  "private": true,
+  "main": "javascript/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "gulp dev"
+  },
+  "author": "woldie",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "expectant": "^0.0.1",
+    "glob-stream": "^6.1.0",
+    "gulp": "^3.9.1",
+    "gulp-watch": "^5.0.0",
+    "handlebars-loader": "^1.7.0",
+    "html-webpack-plugin": "^3.2.0",
+    "karma": "^2.0.2",
+    "karma-firefox-launcher": "^1.1.0",
+    "karma-mocha": "^1.3.0",
+    "karma-mocha-reporter": "^2.2.5",
+    "karma-quixote": "^1.0.0",
+    "karma-sourcemap-loader": "^0.3.7",
+    "karma-super-dots-reporter": "^0.2.0",
+    "map-stream": "0.0.7",
+    "mocha": "^5.2.0",
+    "quixote": "^0.14.0",
+    "webpack-stream": "^4.0.3",
+    "xargs": "^1.1.3"
+  },
+  "dependencies": {
+    "@pixi/app": "^5.0.0-alpha.2",
+    "@pixi/utils": "^5.0.0-alpha.2",
+    "inkjs": "^1.6.0",
+    "install": "^0.11.0",
+    "jquery": "^3.3.1",
+    "lodash": "^4.17.10",
+    "rxjs": "^6.2.0"
+  }
+}
