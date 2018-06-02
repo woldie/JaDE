@@ -4,7 +4,10 @@
     "packages/*"
   ],
   "command": {
-    "run": {
+    "dev": {
+      "stream": true
+    },
+    "test": {
       "stream": true
     }
   },

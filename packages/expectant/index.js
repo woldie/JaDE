@@ -18,6 +18,8 @@
 
 "use strict";
 
+var proclaim = require("proclaim");
+
 /**
  * Wrapper for proclaim.js to make it work similar to an xUnit assertions library.  Not intended for release
  * with production code

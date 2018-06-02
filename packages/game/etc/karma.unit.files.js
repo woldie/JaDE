@@ -14,7 +14,7 @@ if(typeof window !== "undefined") {
 
   // require all modules ending in ".spec" or ".comp" from the
   // current directory and all subdirectories
-  var testsContext = require.context("../src/main/javascript", true, /(\.spec)$/);
+  var testsContext = require.context("../javascript", true, /(\.spec)$/);
 
   function inManifest(path) {
     return __karmaWebpackManifest__.indexOf(path) >= 0;

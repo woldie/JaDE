@@ -11,7 +11,11 @@ var fs = require("fs"),
 
 var isWindows = os.platform() === "win32";
 
-gulp.task("default", [ "watch-ink", "watch-webpack" ]);
+gulp.task("default", function() {
+  throw new Error("Make this do a full build someday");
+});
+
+gulp.task("dev", [ "watch-ink", "watch-webpack", "watch-unit" ]);
 
 gulp.task("watch-ink", function() {
   // call once immediately
@@ -30,12 +34,25 @@ gulp.task("watch-webpack", function() {
     .pipe(gulp.dest("dist/"));
 });
 
-gulp.task("watch-unit", function() {
+gulp.task("watch-unit", function(done) {
   var karma = require("karma"),
     karmaServer = new karma.Server({
       configFile: __dirname + "/etc/karma.unit.conf.js",
       singleRun: false,
-      autoWatch: true
+      autoWatch: true,
+      browsers: [ 'Firefox' ]
+    }, done);
+
+  karmaServer.start();
+});
+
+gulp.task("unit", function(done) {
+  var karma = require("karma"),
+    karmaServer = new karma.Server({
+      configFile: __dirname + "/etc/karma.unit.conf.js",
+      singleRun: true,
+      autoWatch: false,
+      browsers: [ 'Firefox' ]
     }, done);
 
   karmaServer.start();
