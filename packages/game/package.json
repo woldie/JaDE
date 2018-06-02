@@ -1,7 +1,7 @@
 {
   "name": "game",
   "version": "0.0.1",
-  "description": "Playable game engine",
+  "description": "Playable game engine - this project is meant to be forked and used as the basis for a new game.",
   "private": true,
   "main": "javascript/main.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "test": "gulp unit"
   },
   "author": "woldie",
-  "license": "Apache-2.0",
+  "license": "CC-BY-4.0",
   "devDependencies": {
     "expectant": "^0.0.1",
     "glob-stream": "^6.1.0",
