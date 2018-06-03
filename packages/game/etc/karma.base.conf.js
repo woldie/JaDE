@@ -61,6 +61,7 @@ module.exports = function(config) {
       require("karma-mocha-reporter"),
       require("karma-proclaim"),
       require("karma-quixote"),
+      require("karma-chrome-launcher"),
       require("karma-firefox-launcher"),
       require("karma-sourcemap-loader"),
       require("karma-super-dots-reporter")
@@ -120,7 +121,13 @@ module.exports = function(config) {
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_WARN,
+    logLevel: config.LOG_DEBUG,
+
+    // A list of log appenders to be used
+    loggers: [{type: 'console'}],
+
+    // When true, this will start the karma server in another process, writing no output to the console.
+    detached: false,
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher

@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/bash -e
 
 # JaDE - A roguelike game engine for HTML.
 # <br />Copyright (C) 2018  Woldrich, Inc.
@@ -9,6 +9,8 @@
 #   <br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
 #     Creative Commons Attribution-ShareAlike 4.0 International License
 #   </a>.
+
+echo Compiling $3
 
 case "$(uname -s)" in
  CYGWIN*|MINGW32*|MSYS*)

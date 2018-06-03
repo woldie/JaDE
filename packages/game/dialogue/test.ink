@@ -12,4 +12,4 @@
 
 VAR npcName = ""
 blah!!  {npcName}
-sdfsdf!! {npcName}
+sdfsdf!!!! {npcName}

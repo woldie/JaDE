@@ -15,6 +15,9 @@ var fs = require("fs"),
   path = require("path"),
   os = require("os"),
   gulp = require("gulp"),
+  shell = require("gulp-shell"),
+  each = require("gulp-each"),
+  PluginError = require("plugin-error"),
   globStream = require("glob-stream"),
   mapStream = require("map-stream"),
   xargs = require("xargs"),
@@ -27,8 +30,6 @@ var isWindows = os.platform() === "win32";
 gulp.task("default", function() {
   throw new Error("Make this do a full build someday");
 });
-
-gulp.task("dev", [ "watch-ink", "watch-webpack", "watch-unit" ]);
 
 gulp.task("watch-ink", function() {
   // call once immediately
@@ -59,14 +60,24 @@ gulp.task("watch-unit", function(done) {
   karmaServer.start();
 });
 
+gulp.task("dev", [ "watch-ink", "watch-webpack", "watch-unit" ]);
+
 gulp.task("unit", function(done) {
   var karma = require("karma"),
     karmaServer = new karma.Server({
       configFile: __dirname + "/etc/karma.unit.conf.js",
       singleRun: true,
       autoWatch: false,
-      browsers: [ 'Firefox' ]
-    }, done);
+      browsers: [ "Firefox" ]
+    }, function(err) {
+      if(err !== 0){
+        this.emit("error", new PluginError("karma", {
+          message: "Karma Tests failed"
+        }));
+      }
+
+      done();
+    });
 
   karmaServer.start();
 });
@@ -95,19 +106,10 @@ function invokeInklecateCompiler() {
     throw new Error("Set the INKLECATE_COMPILER environment variable to the path to an inkjs-compatible inklecate compiler");
   }
 
-  return globStream(["./dialogue/*.ink"], { allowEmpty: false, cwd: '.' })
-    .pipe(mapStream(function(inkFile, cb) {
-      var srcFilenamePart = path.basename(inkFile.path, ".ink"),
-        srcDirPart = path.dirname(inkFile.path),
-        absoluteInkFilePath = path.resolve(inkFile.path),
-        outputFilePath = path.resolve(srcDirPart, srcFilenamePart + ".json"),
-        args = [
-          "-o",
-          outputFilePath,
-          absoluteInkFilePath
-        ];
-
-      cb(null, args.join(" "));
-    }))
-    .pipe(xargs(path.resolve("./call_inklecate_compiler.sh"), { windowsVerbatimArguments: true }));
+  return gulp.src("./dialogue/*.ink", {read: false}) // globStream(["./dialogue/*.ink"], { allowEmpty: false, cwd: '.' })
+    .pipe(shell(
+      'bash ./call_inklecate_compiler.sh -o ' +
+        '<% print(path.resolve(path.dirname(file.path), path.basename(file.path, ".ink") + ".json").replace(/\\\\/g, "/")) %> ' +
+        '<% print(path.resolve(path.resolve(file.path)).replace(/\\\\/g, "/")) %>',
+      { templateData: { "path": path } }));
 }
