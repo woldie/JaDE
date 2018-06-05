@@ -28,7 +28,8 @@ function makeTestingWebpackConfig(outputModuleName) {
     entry: entryObj,
     devtool: "inline-source-map",
     resolve: {
-      extensions: [ ".js" ]
+      extensions: [ ".js", "" ],
+      modulesDirectories: [ "node_modules" ]
     },
     plugins: [
     ],
@@ -50,6 +51,8 @@ module.exports = function(config) {
   var commonSettings = {
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: path.resolve(__dirname, ".."),
+
+    transports: [ "polling" ],
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter

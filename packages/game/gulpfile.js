@@ -54,7 +54,7 @@ gulp.task("watch-unit", function(done) {
       configFile: __dirname + "/etc/karma.unit.conf.js",
       singleRun: false,
       autoWatch: true,
-      browsers: [ 'Firefox' ]
+      browsers: [ "Firefox" ]
     }, done);
 
   karmaServer.start();
@@ -70,13 +70,11 @@ gulp.task("unit", function(done) {
       autoWatch: false,
       browsers: [ "Firefox" ]
     }, function(err) {
-      if(err !== 0){
-        this.emit("error", new PluginError("karma", {
-          message: "Karma Tests failed"
-        }));
+      if(err) {
+        console.log("Karma exited with error code: " + err);
       }
 
-      done();
+      process.exit(err);
     });
 
   karmaServer.start();

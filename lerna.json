@@ -3,10 +3,6 @@
   "packages": [
     "packages/*"
   ],
-  "command": {
-    "run": {
-      "stream": true
-    }
-  },
+  "loglevel": "info",
   "version": "independent"
 }
