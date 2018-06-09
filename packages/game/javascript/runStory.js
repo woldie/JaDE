@@ -15,6 +15,7 @@
 
 var inkjs = require("inkjs"),
   $ = require("jquery"),
+  rx = require("rx"),
 
   choiceLink = require("../content/choiceLink.hbs"),
   testStoryDiv = require("../content/testStoryDiv.hbs"),
@@ -55,6 +56,8 @@ function testStory(storyJson) {
 
     requestAnimationFrame(step);
   }
+
+
 
   function continueStory() {
     var delay = 0.0;
