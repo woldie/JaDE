@@ -68,7 +68,7 @@ gulp.task("unit", function(done) {
       configFile: __dirname + "/etc/karma.unit.conf.js",
       singleRun: true,
       autoWatch: false,
-      browsers: [ "Firefox" ]
+      browsers: [ "FirefoxHeadless" ]
     }, function(err) {
       if(err) {
         console.log("Karma exited with error code: " + err);

@@ -17,6 +17,6 @@
  * limitations under the License.
  */
 
-var Injector = require("lib/injector");
+var Injector = require("./lib/injector");
 
 module.exports = new Injector();

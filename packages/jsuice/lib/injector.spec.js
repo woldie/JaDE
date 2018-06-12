@@ -8,7 +8,7 @@ var expect = require("expectant"),
 
 describe("injector", function() {
   var module,
-    injector;
+    /** @type {Injector} */ injector;
 
   beforeEach(function() {
     injector = new Injector();

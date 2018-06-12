@@ -18,7 +18,8 @@ var PixiApplication = require("@pixi/app").Application,
   $ = require("jquery"),
 
   runStory = require("./runStory"),
-  testInkJson = require("../dialogue/test.json");
+  testInkJson = require("../dialogue/test.json"),
+  jadeModule = require("./jadeModule");
 
 var app = new PixiApplication({
   width: 256,         // default: 800

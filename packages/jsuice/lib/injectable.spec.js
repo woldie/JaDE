@@ -10,7 +10,7 @@ describe("injectable", function() {
   var sandbox = null;
 
   beforeEach(function() {
-    sandbox = sinon.sandbox.create();
+    sandbox = sinon.createSandbox();
   });
 
   afterEach(function() {
