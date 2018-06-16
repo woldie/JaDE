@@ -74,6 +74,29 @@ var expectImpl = {
   },
 
   /**
+   * strict is undefined assertion
+   *
+   * @param {*} expected
+   * @param {!string=} message
+   */
+  isUndefined: function(expected, message) {
+    message = message || "expected undefined";
+    proclaim.isTrue(typeof expected === "undefined", message);
+  },
+
+  /**
+   * strict is not undefined assertion
+   *
+   * @param {*} expected
+   * @param {!string=} message
+   */
+  isDefined: function(expected, message) {
+    message = message || "expected not undefined";
+    proclaim.isTrue(typeof expected !== "undefined" &&
+      expected !== null, message);
+  },
+
+  /**
    * truthy assertion
    *
    * @param {*} expected
