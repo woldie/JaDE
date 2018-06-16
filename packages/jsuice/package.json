@@ -5,7 +5,8 @@
   "private": false,
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha ./lib/**/*.spec.js"
+    "test": "./node_modules/mocha/bin/mocha ./lib/**/*.spec.js",
+    "watch": "./node_modules/mocha/bin/mocha --watch ./lib/**/*.spec.js"
   },
   "author": "woldie",
   "license": "Apache-2.0",

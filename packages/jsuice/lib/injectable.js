@@ -21,36 +21,35 @@ function Injectable(subject, injectableName) {
   switch(typeof subject) {
     case "function":
       scope = Scope.PROTOTYPE;
-      type = InjectableType.INJECTED_CONSTRUCTOR;
 
       if(!subject.hasOwnProperty("$meta")) {
-        if (subject.length) {
-          throw new Error("Injectable '" + injectableName + "' constructor function requires a $meta " +
-            "property to describe its constructor args");
-        }
+        throw new Error("Injectable '" + injectableName + "' function requires a $meta " +
+          "property to describe how it should be invoked.  See injector#annotateConstructor or " +
+          "injector#annotateProvider for details.");
       }
-      else {
-        metaObj = subject["$meta"];
-        describedParameters = metaObj.injectedParams || [];
 
-        if(metaObj.hasOwnProperty("type")) {
-          throw new Error("Injectable may not specify its own type in $meta: " + injectableName);
-        }
+      metaObj = subject["$meta"];
+      describedParameters = metaObj.injectedParams || [];
 
-        if(describedParameters.length != subject.length) {
-          throw new Error("Injectable '" + injectableName + "' constructor function argument count " +
-            "(" + subject.length + ") differs from the count of $meta.injectedParams " +
-            "(" + describedParameters.length + ")");
-        }
-
-        Array.prototype.push.apply(self.injectedParams, describedParameters);
-
-        if(metaObj.hasOwnProperty("scope")) {
-          scope = metaObj.scope;
-        }
-
-        eagerInstantiation = !!metaObj.eager;
+      if(!metaObj.hasOwnProperty("type")) {
+        throw new Error("Injectable must specify a type in $meta: " + injectableName);
       }
+
+      type = metaObj.type;
+
+      if(describedParameters.length != subject.length) {
+        throw new Error("Injectable '" + injectableName + "' constructor function argument count " +
+          "(" + subject.length + ") differs from the count of $meta.injectedParams " +
+          "(" + describedParameters.length + ")");
+      }
+
+      Array.prototype.push.apply(self.injectedParams, describedParameters);
+
+      if(metaObj.hasOwnProperty("scope")) {
+        scope = metaObj.scope;
+      }
+
+      eagerInstantiation = !!metaObj.eager;
       break;
 
     case "object":

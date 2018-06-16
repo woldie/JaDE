@@ -11,13 +11,19 @@ function MyTestClass() {
   this.b = "2";
 }
 
+MyTestClass["$meta"] = {
+  injectedParams: [],
+  type: InjectableType.INJECTED_CONSTRUCTOR
+};
+
 function MyGoodMetaClass(inject1, inject2) {
   this.inject1 = inject1;
   this.inject2 = inject2;
 }
 
 MyGoodMetaClass["$meta"] = {
-  injectedParams: [ "InjectOne", "InjectTwo" ]
+  injectedParams: [ "InjectOne", "InjectTwo" ],
+  type: InjectableType.INJECTED_CONSTRUCTOR
 };
 
 function MyBusyMetaClass(inject1) {
@@ -26,6 +32,7 @@ function MyBusyMetaClass(inject1) {
 
 MyBusyMetaClass["$meta"] = {
   injectedParams: [ "InjectOne" ],
+  type: InjectableType.INJECTED_CONSTRUCTOR,
   scope: Scope.PROTOTYPE
 };
 

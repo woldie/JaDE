@@ -120,11 +120,12 @@ Injector.prototype.annotateConstructor = function(ctor, flags, injectedParams) {
   var argList = Array.from(arguments),
     metaObj = {
       injectedParams: (argList.length > 2) ? argList.slice(2) : [],
+      type: InjectableType.INJECTED_CONSTRUCTOR,
       eager: false
     }, i, ii;
 
   for(i = 0, ii = metaObj.injectedParams.length; i < ii; i++) {
-    if(typeof metaObj.injectedParams[i] !== "string") {
+    if(!isString(metaObj.injectedParams[i])) {
       throw new Error("only Strings are expected for injectedParams");
     }
   }
@@ -179,6 +180,55 @@ Injector.prototype.annotateConstructor = function(ctor, flags, injectedParams) {
   ctor["$meta"] = metaObj;
 
   return ctor;
+};
+
+/**
+ * Annotate a provider function with metadata that instructs the injector what the scope, injectedParams and
+ * other configuration flags should be when it instantiates using that provider function.  With the annotations, the
+ * provider function is converted into a proper module that can be added to a module group.
+ *
+ * @param {Function} provider provider function that serves as a factory for injected objects.  The parameters
+ * of this function must have the same number as injectedParams.  If the PROTOTYPE_SCOPE flag is passed in flags,
+ * then provider may take additional parameters that the end-user can use to supply additional values at time of
+ * instantiation
+ * @param {Number=} flags integer containing flags (as set bits) that describe what the scope and configuration flags
+ * should be for the provider function
+ * @param {...String=} injectedParams injected parameters that need to be passed to the provider function at time of
+ * instantiation
+ * @returns {Function} annotated provider function that is suitable to be added as a module to a module group
+ * @see {@link Injector#newModuleGroup}
+ */
+Injector.prototype.annotateProvider = function(provider, flags, injectedParams) {
+  var argList = Array.from(arguments),
+    metaObj = {
+      injectedParams: (argList.length > 2) ? argList.slice(2) : [],
+      type: InjectableType.PROVIDER_FUNCTION,
+      eager: false
+    }, i, ii;
+
+  flags = (typeof flags === "undefined") ? Injector.prototype.PROTOTYPE_SCOPE : flags;
+
+  switch(flags & (Injector.prototype.SINGLETON_SCOPE | Injector.prototype.APPLICATION_SCOPE |
+      Injector.prototype.PROTOTYPE_SCOPE)) {
+
+    case Injector.prototype.APPLICATION_SCOPE:
+      metaObj.scope = Scope.APPLICATION;
+
+      flags -= Injector.prototype.APPLICATION_SCOPE;
+
+      if((flags & Injector.prototype.EAGER_FLAG) === Injector.prototype.EAGER_FLAG) {
+        flags -= Injector.prototype.EAGER_FLAG;
+
+        metaObj.eager = true;
+      }
+      break;
+
+    default:
+      throw new Error("Exactly one scope flag was expected");
+  }
+
+    provider["$meta"] = metaObj;
+  return provider;
 };
 
 /**

@@ -4,7 +4,8 @@ var expect = require("expectant"),
 
   Injector = require("./injector"),
   Scope = require("./scope"),
-  InjectorModule = require("./moduleGroup");
+  InjectorModule = require("./moduleGroup"),
+  InjectableType = require("./injectableType");
 
 describe("injector", function() {
   var module,
@@ -38,6 +39,7 @@ describe("injector", function() {
     function MyConstructor() {
       this.a = 123;
     }
+    injector.annotateConstructor(MyConstructor);
 
     module.register("MyConstructor", MyConstructor);
 
@@ -57,6 +59,7 @@ describe("injector", function() {
     function MyConstructor() {
       this.a = 123;
     }
+    injector.annotateConstructor(MyConstructor);
 
     module.register("MyConstructor", MyConstructor);
 
@@ -198,9 +201,11 @@ describe("injector", function() {
   it("[newModuleGroup] will error if your module uses the same name more than once", function() {
     function MyConstructor() {
     }
+    injector.annotateConstructor(MyConstructor);
 
     function OtherConstructor() {
     }
+    injector.annotateConstructor(OtherConstructor);
 
     expect.throws(function() {
       injector.newModuleGroup("myGroup", [
@@ -213,9 +218,11 @@ describe("injector", function() {
   it("[newModuleGroup] will error if your module uses the same name more than once across module groups", function() {
     function MyConstructor() {
     }
+    injector.annotateConstructor(MyConstructor);
 
     function OtherConstructor() {
     }
+    injector.annotateConstructor(OtherConstructor);
 
     injector.newModuleGroup("otherGroup", [
       "MyConstructor", MyConstructor
@@ -253,7 +260,8 @@ describe("injector", function() {
     var annotatedCtor = injector.annotateConstructor(MyConstructor, injector.SINGLETON_SCOPE | injector.EAGER_FLAG, "gazinta", "another");
 
     expect.isSameReference(annotatedCtor, MyConstructor, "the returned constructor is the same reference as the one passed in");
-    expect.isNotNull(MyConstructor["$meta"], "$meta was added to the constructor");
+    expect.isDefined(MyConstructor["$meta"], "$meta was added to the constructor");
+    expect.equals(InjectableType.INJECTED_CONSTRUCTOR, MyConstructor["$meta"].type, "type is correct");
     expect.equals(Scope.SINGLETON, MyConstructor["$meta"].scope, "singleton scope set");
     expect.isTrue(MyConstructor["$meta"].eager, "eager flag set");
     expect.deepEquals([ "gazinta", "another" ], MyConstructor["$meta"].injectedParams, "injected params set");
@@ -328,5 +336,18 @@ describe("injector", function() {
     expect.throws(function() {
       injector.annotateConstructor(MyConstructor, injector.APPLICATION_SCOPE | injector.EAGER_FLAG | 4096);
     }, /Unknown flags/, "Will throw if unknown flags are detected");
+  });
+
+  it("[annotateProvider] will set $meta with all the appropriate values", function() {
+    function providerFunction(xyz) {}
+
+    var result = injector.annotateProvider(providerFunction, injector.APPLICATION_SCOPE | injector.EAGER_FLAG, "xyz", "abc");
+
+    expect.isSameReference(result, providerFunction, "The annotated provider function is returned");
+    expect.isDefined(result["$meta"], "$meta was set");
+    expect.deepEquals([ "xyz", "abc" ], result["$meta"].injectedParams, "injected params set");
+    expect.equals(InjectableType.PROVIDER_FUNCTION, result["$meta"].type, "type is correct");
+    expect.equals(Scope.APPLICATION, result["$meta"].scope, "application scope set");
+    expect.isTrue(result["$meta"].eager, "eager flag set");
   });
 });

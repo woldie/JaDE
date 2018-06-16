@@ -34,6 +34,29 @@ describe("injectable", function() {
     }, Error, "expected a valid $meta object property attached to a constructor function that takes parameters");
   });
 
+  it("will fail if the constructor function without args does not have a $meta property", function() {
+    function MyMetaNotNeededOnNoArgsClass() {
+      this.e = "5";
+      this.f = "6";
+    }
+
+    expect.throws(function() {
+      new Injectable(MyMetaNotNeededOnNoArgsClass, "MyMetaNotNeededOnNoArgsClass");
+    }, /function requires a \$meta/, "MyMetaNotNeededOnNoArgsClass does not have any constructor args, and the registration should be allowed to succeed");
+  });
+
+  it("will fail if the Injectable does not have a type on the $meta property", function() {
+    function MyClass() {
+    }
+
+    MyClass["$meta"] = {
+    };
+
+    expect.throws(function() {
+      new Injectable(MyClass, "MyClass");
+    }, /Injectable must specify a type in \$meta/, "MyMetaNotNeededOnNoArgsClass does not have any constructor args, and the registration should be allowed to succeed");
+  });
+
   it("will fail if the constructor argument count does not equal length of injectedParams", function() {
     function MyWrongMetaClass(injectMe) {
       this.g = "7";
@@ -42,23 +65,13 @@ describe("injectable", function() {
     }
 
     MyWrongMetaClass["$meta"] = {
-      injectedParams: [ "OneThing", "OtherThing" ]
+      injectedParams: [ "OneThing", "OtherThing" ],
+      type: InjectableType.INJECTED_CONSTRUCTOR
     };
 
     expect.throws(function() {
       new Injectable(MyWrongMetaClass, "MyWrongMetaClass");
-    }, Error, "MyWrongMetaClass constructor args count does not match the $meta.injectedParams length");
-  });
-
-  it("will not fail if the constructor function without args does not have a $meta property", function() {
-    function MyMetaNotNeededOnNoArgsClass() {
-      this.e = "5";
-      this.f = "6";
-    }
-
-    expect.notThrows(function() {
-      new Injectable(MyMetaNotNeededOnNoArgsClass, "MyMetaNotNeededOnNoArgsClass");
-    }, "MyMetaNotNeededOnNoArgsClass does not have any constructor args, and the registration should be allowed to succeed");
+    }, /differs from the count of \$meta.injectedParams/, "MyWrongMetaClass constructor args count does not match the $meta.injectedParams length");
   });
 
   it("will fail if anything other than object or function is passed to constructor", function() {
@@ -81,6 +94,7 @@ describe("injectable", function() {
 
     MyTestClass["$meta"] = {
       injectedParams: [ "param1", "param2" ],
+      type: InjectableType.INJECTED_CONSTRUCTOR,
       scope: Scope.SINGLETON
     };
 
@@ -118,7 +132,8 @@ describe("injectable", function() {
       }
 
       MyTestClass["$meta"] = {
-        scope: aScope
+        scope: aScope,
+        type: InjectableType.INJECTED_CONSTRUCTOR
       };
 
       var injectable = new Injectable(MyTestClass, "mytestclass");
@@ -133,6 +148,7 @@ describe("injectable", function() {
 
     MyTestClass["$meta"] = {
       scope: Scope.SINGLETON,
+      type: InjectableType.INJECTED_CONSTRUCTOR,
       eager: true
     };
 

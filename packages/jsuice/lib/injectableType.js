@@ -5,7 +5,8 @@
  */
 var InjectableType = {
   INJECTED_CONSTRUCTOR: "c",
-  OBJECT_INSTANCE: "o"
+  OBJECT_INSTANCE: "o",
+  PROVIDER_FUNCTION: "p"
 };
 
 module.exports = InjectableType;
