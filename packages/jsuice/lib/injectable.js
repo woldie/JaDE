@@ -20,15 +20,18 @@ function Injectable(subject, injectableName) {
 
   switch(typeof subject) {
     case "function":
-      scope = Scope.PROTOTYPE;
-
       if(!subject.hasOwnProperty("$meta")) {
         throw new Error("Injectable '" + injectableName + "' function requires a $meta " +
           "property to describe how it should be invoked.  See injector#annotateConstructor or " +
           "injector#annotateProvider for details.");
       }
-
       metaObj = subject["$meta"];
+
+      scope = Scope.PROTOTYPE;
+      if(metaObj.hasOwnProperty("scope")) {
+        scope = metaObj.scope;
+      }
+
       describedParameters = metaObj.injectedParams || [];
 
       if(!metaObj.hasOwnProperty("type")) {
@@ -37,17 +40,32 @@ function Injectable(subject, injectableName) {
 
       type = metaObj.type;
 
-      if(describedParameters.length != subject.length) {
-        throw new Error("Injectable '" + injectableName + "' constructor function argument count " +
-          "(" + subject.length + ") differs from the count of $meta.injectedParams " +
-          "(" + describedParameters.length + ")");
+      switch(type) {
+        case InjectableType.INJECTED_CONSTRUCTOR:
+          if(describedParameters.length != subject.length) {
+            throw new Error("Injectable '" + injectableName + "' constructor function argument count " +
+              "(" + subject.length + ") differs from the count of $meta.injectedParams " +
+              "(" + describedParameters.length + ")");
+          }
+          break;
+        case InjectableType.PROVIDER_FUNCTION:
+          if(describedParameters.length > subject.length) {
+            throw new Error("Injectable '" + injectableName + "' constructor function argument count " +
+              "(" + subject.length + ") is less than the count of $meta.injectedParams " +
+              "(" + describedParameters.length + ")");
+          }
+          else if(scope !== Scope.PROTOTYPE && describedParameters.length < subject.length) {
+            throw new Error("Non-PROTOTYPE Injectable '" + injectableName + "' constructor function argument count " +
+              "(" + subject.length + ") may not be greater than the count of $meta.injectedParams " +
+              "(" + describedParameters.length + ")");
+          }
+          break;
+        default:
+          throw new Error("$meta.type must be PROVIDER_FUNCTION or INJECTED_CONSTRUCTOR, was (" +
+            type + ")");
       }
 
       Array.prototype.push.apply(self.injectedParams, describedParameters);
-
-      if(metaObj.hasOwnProperty("scope")) {
-        scope = metaObj.scope;
-      }
 
       eagerInstantiation = !!metaObj.eager;
       break;

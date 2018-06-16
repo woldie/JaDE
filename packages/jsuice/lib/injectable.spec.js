@@ -34,7 +34,7 @@ describe("injectable", function() {
     }, Error, "expected a valid $meta object property attached to a constructor function that takes parameters");
   });
 
-  it("will fail if the constructor function without args does not have a $meta property", function() {
+  it("will fail if a function passed does not have a $meta property", function() {
     function MyMetaNotNeededOnNoArgsClass() {
       this.e = "5";
       this.f = "6";
@@ -57,7 +57,7 @@ describe("injectable", function() {
     }, /Injectable must specify a type in \$meta/, "MyMetaNotNeededOnNoArgsClass does not have any constructor args, and the registration should be allowed to succeed");
   });
 
-  it("will fail if the constructor argument count does not equal length of injectedParams", function() {
+  it("will fail if the INJECTED_CONSTRUCTOR function argument count does not equal length of injectedParams", function() {
     function MyWrongMetaClass(injectMe) {
       this.g = "7";
       this.h = "8";
@@ -155,5 +155,82 @@ describe("injectable", function() {
     var injectable = new Injectable(MyTestClass, "mytestclass");
 
     expect.isTrue(injectable.eagerInstantiation);
+  });
+
+  it("[constructor] function parameter count validations fail if type is INJECTED_CONSTRUCTOR when counts are not exactly equal", function() {
+    function LessParamsConstructor(oneParam) {
+    }
+    LessParamsConstructor["$meta"] = {
+      type: InjectableType.INJECTED_CONSTRUCTOR,
+      injectedParams: ["oneParam", "twoParam"]
+    };
+
+    function MoreParamsConstructor(oneParam, twoParam) {
+    }
+    MoreParamsConstructor["$meta"] = {
+      type: InjectableType.INJECTED_CONSTRUCTOR,
+      injectedParams: ["oneParam"]
+    };
+
+    _.forEach([LessParamsConstructor, MoreParamsConstructor], function(clazz) {
+      expect.throws(function() {
+        new Injectable(clazz, "MyClass");
+      }, /differs from the count of \$meta.injectedParams/, "throws because counts don't match");
+    });
+
+  });
+
+  it("[constructor] function parameter count validations fail if type is PROVIDER_FUNCTION and injectedParams counts is greater than the function param count", function() {
+    function LessParamsProvider(oneParam) {
+    }
+
+    LessParamsProvider["$meta"] = {
+      type: InjectableType.PROVIDER_FUNCTION,
+      injectedParams: ["oneParam", "twoParam"]
+    };
+
+    expect.throws(function () {
+      new Injectable(LessParamsProvider, "LessParamsProvider")
+    }, /is less than the count of \$meta.injectedParams/, "A provider function cannot have fewer parameters than \$meta.injectedParams");
+  });
+
+  it("[constructor] function parameter count validations will not fail if scope is PROTOTYPE and type is PROVIDER_FUNCTION when injectedParams counts is greater than the function param count (allows for assisted injection)", function() {
+    function MoreParamsProvider(oneParam, twoParam) {
+    }
+    MoreParamsProvider["$meta"] = {
+      type: InjectableType.PROVIDER_FUNCTION,
+      scope: Scope.PROTOTYPE,
+      injectedParams: ["oneParam"]
+    };
+
+    expect.notThrows(function() {
+      new Injectable(MoreParamsProvider, "MoreParamsProvider")
+    }, "A PROTOTYPE-scope provider function can take additional parameters in the function")
+  });
+
+  it("[constructor] function parameter count validations will fail if scope is not PROTOTYPE and type is PROVIDER_FUNCTION when injectedParams counts is greater than the function param count (assisted injection only allowed for PROTOTYPE scope)", function() {
+    function MoreParamsProvider(oneParam, twoParam) {
+    }
+    MoreParamsProvider["$meta"] = {
+      type: InjectableType.PROVIDER_FUNCTION,
+      scope: Scope.SINGLETON,
+      injectedParams: ["oneParam"]
+    };
+
+    expect.throws(function() {
+      new Injectable(MoreParamsProvider, "MoreParamsProvider")
+    }, /may not be greater than the count of \$meta.injectedParams/, "A non PROTOTYPE-scope provider function cannot take additional parameters in the function")
+  });
+
+  it("[constructor] function validations fail if type is not INJECTED_CONSTRUCTOR or PROVIDER_FUNCTION", function() {
+    function DummyFunction() {}
+
+    DummyFunction["$meta"] = {
+      type: InjectableType.OBJECT_INSTANCE
+    };
+
+    expect.throws(function() {
+      new Injectable(DummyFunction, "DummyFunction");
+    }, /type must be PROVIDER_FUNCTION or INJECTED_CONSTRUCTOR/, "bad type");
   });
 });
