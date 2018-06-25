@@ -16,7 +16,7 @@ describe("renderLoop", function() {
 
   it("[start] will increment the frameId every time there is an animationFrame page flip", function() {
     // create a mock hot observable that simulates the request animation frame event firing
-    renderLoop = new RenderLoop({ create: () => mockScheduler.createHotObservable("----a----b----") });
+    renderLoop = new RenderLoop(mockScheduler.createHotObservable("----a----b----"));
 
     renderLoop.start();
 

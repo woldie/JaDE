@@ -1,11 +1,11 @@
 var injector = require("jsuice");
 
-function RenderLoop(animationFrameObservableFactory) {
+function RenderLoop(animationFrameObservable) {
   /**
    * @name RenderLoop#animationFrameObservable
    * @type {Rx.Observable}
    */
-  this.animationFrameObservable = animationFrameObservableFactory.create();
+  this.animationFrameObservable = animationFrameObservable;
 
   /**
    * @name RenderLoop#frameId
@@ -23,4 +23,4 @@ RenderLoop.prototype.start = function() {
     });
 };
 
-module.exports = injector.annotateConstructor(RenderLoop, injector.PROTOTYPE_SCOPE, "animationFrameObservableFactory");
+module.exports = injector.annotateConstructor(RenderLoop, injector.PROTOTYPE_SCOPE, "animationFrameObservable");

@@ -15,4 +15,9 @@ AnimationFrameObservableFactory.prototype.create = function() {
   return Rx.interval(0, this.animationFrameScheduler);
 };
 
-module.exports = injector.annotateConstructor(AnimationFrameObservableFactory, injector.PROTOTYPE_SCOPE, "animationFrameScheduler");
+function animationFrameObservable(animationFrameScheduler) {
+  return Rx.interval(0, animationFrameScheduler)
+}
+
+module.exports = injector.annotateProvider(animationFrameObservable, injector.PROTOTYPE_SCOPE,
+  "animationFrameScheduler");

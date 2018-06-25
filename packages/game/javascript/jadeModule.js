@@ -4,10 +4,10 @@ var Rx = require("rx"),
   injector = require("jsuice"),
 
   RenderLoop = require("./renderLoop"),
-  AnimationFrameObservableFactory = require("./animationFrameObservableFactory");
+  animationFrameObservable = require("./animationFrameObservable");
 
 injector.newModuleGroup("jade", [
   "animationFrameScheduler", Rx.Scheduler.animationFrame,
-  "animationFrameObservableFactory", AnimationFrameObservableFactory,
+  "animationFrameObservable", animationFrameObservable,
   "RenderLoop", RenderLoop
 ]);
