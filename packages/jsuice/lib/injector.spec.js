@@ -339,15 +339,37 @@ describe("injector", function() {
   });
 
   it("[annotateProvider] will set $meta with all the appropriate values", function() {
+    annotateProviderHappyPath(injector.APPLICATION_SCOPE | injector.EAGER_FLAG, true, Scope.APPLICATION);
+    annotateProviderHappyPath(injector.APPLICATION_SCOPE, false, Scope.APPLICATION);
+  });
+
+  it("[annotateProvider] will set $meta with all the appropriate values for SINGLETON_SCOPE", function() {
+    annotateProviderHappyPath(injector.SINGLETON_SCOPE | injector.EAGER_FLAG, true, Scope.SINGLETON);
+    annotateProviderHappyPath(injector.SINGLETON_SCOPE, false, Scope.SINGLETON);
+  });
+
+  it("[annotateProvider] will set $meta with all the appropriate values for PROTOTYPE_SCOPE", function() {
+    annotateProviderHappyPath(injector.PROTOTYPE_SCOPE, false, Scope.PROTOTYPE);
+  });
+
+  it("[annotateProvider] will throw if PROTOTYPE_SCOPE and eager flag is set", function() {
     function providerFunction(xyz) {}
 
-    var result = injector.annotateProvider(providerFunction, injector.APPLICATION_SCOPE | injector.EAGER_FLAG, "xyz", "abc");
+    expect.throws(function() {
+      injector.annotateProvider(providerFunction, injector.PROTOTYPE_SCOPE | injector.EAGER_FLAG, "xyz", "abc");
+    }, /Eager flag cannot be used with PROTOTYPE_SCOPE/, "eager flag incompatible");
+  });
+
+  function annotateProviderHappyPath(flags, eagerExpected, expectedScope) {
+    function providerFunction(xyz) {}
+
+    var result = injector.annotateProvider(providerFunction, flags, "xyz", "abc");
 
     expect.isSameReference(result, providerFunction, "The annotated provider function is returned");
     expect.isDefined(result["$meta"], "$meta was set");
     expect.deepEquals([ "xyz", "abc" ], result["$meta"].injectedParams, "injected params set");
     expect.equals(InjectableType.PROVIDER_FUNCTION, result["$meta"].type, "type is correct");
-    expect.equals(Scope.APPLICATION, result["$meta"].scope, "application scope set");
-    expect.isTrue(result["$meta"].eager, "eager flag set");
-  });
+    expect.equals(expectedScope, result["$meta"].scope, "application scope set");
+    expect.equals(eagerExpected, result["$meta"].eager, "eager flag");
+  }
 });

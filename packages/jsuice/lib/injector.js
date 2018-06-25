@@ -204,7 +204,7 @@ Injector.prototype.annotateProvider = function(provider, flags, injectedParams) 
       injectedParams: (argList.length > 2) ? argList.slice(2) : [],
       type: InjectableType.PROVIDER_FUNCTION,
       eager: false
-    }, i, ii;
+    };
 
   flags = (typeof flags === "undefined") ? Injector.prototype.PROTOTYPE_SCOPE : flags;
 
@@ -212,22 +212,29 @@ Injector.prototype.annotateProvider = function(provider, flags, injectedParams) 
       Injector.prototype.PROTOTYPE_SCOPE)) {
 
     case Injector.prototype.APPLICATION_SCOPE:
-      metaObj.scope = Scope.APPLICATION;
+     metaObj.scope = Scope.APPLICATION;
+     break;
 
-      flags -= Injector.prototype.APPLICATION_SCOPE;
+    case Injector.prototype.SINGLETON_SCOPE:
+      metaObj.scope = Scope.SINGLETON;
+      break;
 
-      if((flags & Injector.prototype.EAGER_FLAG) === Injector.prototype.EAGER_FLAG) {
-        flags -= Injector.prototype.EAGER_FLAG;
-
-        metaObj.eager = true;
+    case Injector.prototype.PROTOTYPE_SCOPE:
+      if((flags & Injector.prototype.EAGER_FLAG) == Injector.prototype.EAGER_FLAG) {
+        throw new Error("Eager flag cannot be used with PROTOTYPE_SCOPE");
       }
+      metaObj.scope = Scope.PROTOTYPE;
       break;
 
     default:
       throw new Error("Exactly one scope flag was expected");
   }
 
-    provider["$meta"] = metaObj;
+  if((flags & Injector.prototype.EAGER_FLAG) === Injector.prototype.EAGER_FLAG) {
+    metaObj.eager = true;
+  }
+
+  provider["$meta"] = metaObj;
   return provider;
 };
 
