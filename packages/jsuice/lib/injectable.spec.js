@@ -116,6 +116,26 @@ describe("injectable", function() {
     expect.notSameReference(instance, anotherInstance, "newInstance did NOT look at scope (caller is expected to do that).  it *always* creates a new instance when called");
   });
 
+  it("[newInstance] will create a new instance of a PROVIDER_FUNCTION with parameters", function() {
+    function myProviderFunction(a, b) {
+      return a + " " + b;
+    }
+
+    myProviderFunction["$meta"] = {
+      injectedParams: [ "a", "b" ],
+      type: InjectableType.PROVIDER_FUNCTION,
+      scope: Scope.PROTOTYPE
+    };
+
+    var dynamicObjectFactorySpy = sandbox.spy(Injectable.prototype, "createDynamicObjectFactory");
+    var injectable = new Injectable(myProviderFunction, "myProviderFunction");
+
+    var instance = injectable.newInstance([ "hello", "goodbye" ]);
+    expect.equals(0, dynamicObjectFactorySpy.callCount, "the object factory was not needed");
+
+    expect.equals("hello goodbye", instance, "param1 was assigned in the constructor");
+  });
+
   it("will throw if non-INJECTED_CONSTRUCTOR type has newInstance called", function() {
     var injectable = new Injectable({}, "a singleton object");
 

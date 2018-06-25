@@ -163,6 +163,10 @@ Injectable.prototype.createDynamicObjectFactory = function(numParams) {
 Injectable.prototype.newInstance = function(params) {
   var self = this;
 
+  if (self.type === InjectableType.PROVIDER_FUNCTION) {
+    return self.subject.apply(null, params);
+  }
+
   if (!self.newInstanceFunction) {
     self.newInstanceFunction = self.createDynamicObjectFactory(params.length);
   }

@@ -175,6 +175,129 @@ describe("injector", function() {
     expect.isSameReference(anObject, anotherInstance.myObject, "the OBJECT_INSTANCE injected really is a singleton");
   });
 
+  it("[SINGLETON, PROVIDER_FUNCTION] will instantiate once and only once", function() {
+    var number = 0;
+    function providerFunction() {
+      number++;
+      return "this should always be a 1: " + number;
+    }
+
+    injector.annotateProvider(providerFunction, injector.SINGLETON_SCOPE);
+
+    module.register("providedObject", providerFunction);
+
+    function MyConstructorWithInjection(otherObject) {
+      this.injectedObject = otherObject;
+    }
+
+    injector.annotateConstructor(MyConstructorWithInjection, injector.PROTOTYPE_SCOPE, "providedObject");
+
+    module.register("MyConstructorWithInjection", MyConstructorWithInjection);
+
+    injector.addModuleGroup(module);
+    var objectWithInjection = injector.getInstance("MyConstructorWithInjection");
+
+    expect.isTrue(objectWithInjection instanceof MyConstructorWithInjection, "outer object is correct type");
+    expect.equals("this should always be a 1: 1", objectWithInjection.injectedObject, "inner object is the singleton string");
+
+    var anotherObjectWithInjection = injector.getInstance("MyConstructorWithInjection");
+
+    expect.isTrue(anotherObjectWithInjection instanceof MyConstructorWithInjection, "outer object is correct type");
+    expect.equals("this should always be a 1: 1", anotherObjectWithInjection.injectedObject, "inner object is the singleton string we already created");
+  });
+
+  it("[PROTOTYPE, PROVIDER_FUNCTION] will instantiate every time", function() {
+    var number = 0;
+    function providerFunction() {
+      number++;
+      return "this should always change: " + number;
+    }
+
+    injector.annotateProvider(providerFunction, injector.PROTOTYPE_SCOPE);
+
+    module.register("providedObject", providerFunction);
+
+    function MyConstructorWithInjection(otherObject) {
+      this.injectedObject = otherObject;
+    }
+
+    injector.annotateConstructor(MyConstructorWithInjection, injector.PROTOTYPE_SCOPE, "providedObject");
+
+    module.register("MyConstructorWithInjection", MyConstructorWithInjection);
+
+    injector.addModuleGroup(module);
+    var objectWithInjection = injector.getInstance("MyConstructorWithInjection");
+
+    expect.isTrue(objectWithInjection instanceof MyConstructorWithInjection, "outer object is correct type");
+    expect.equals("this should always change: 1", objectWithInjection.injectedObject, "inner object is a unique string");
+
+    var anotherObjectWithInjection = injector.getInstance("MyConstructorWithInjection");
+
+    expect.isTrue(anotherObjectWithInjection instanceof MyConstructorWithInjection, "outer object is correct type");
+    expect.equals("this should always change: 2", anotherObjectWithInjection.injectedObject, "inner object is another unique string");
+  });
+
+  it("[PROTOTYPE, PROVIDER_FUNCTION] will instantiate with additional parameters", function() {
+    function MyConstructor() {
+      this.x = 123;
+    }
+
+    injector.annotateConstructor(MyConstructor, injector.SINGLETON_SCOPE);
+
+    module.register("MyConstructor", MyConstructor);
+
+    function providerFunction(myConstructedObj, extraParam1, extraParam2) {
+      return "three things: " + myConstructedObj.x + " " + extraParam1 + " " + extraParam2;
+    }
+
+    injector.annotateProvider(providerFunction, injector.PROTOTYPE_SCOPE, "MyConstructor");
+
+    module.register("providedObject", providerFunction);
+    injector.addModuleGroup(module);
+
+    var assistedInject = injector.getInstance("providedObject", "abc", "xyz");
+
+    expect.equals("three things: 123 abc xyz", assistedInject, "assisted injection worked");
+  });
+
+  it("[newInstance] additional parameters fail with an error when type isnt provider function", function() {
+    function MyConstructor() {
+      this.x = 123;
+    }
+
+    injector.annotateConstructor(MyConstructor, injector.SINGLETON_SCOPE);
+
+    module.register("MyConstructor", MyConstructor);
+    injector.addModuleGroup(module);
+
+    expect.throws(function() {
+      injector.getInstance("MyConstructor", "abc", "xyz");
+    }, /Add'l parameters only allowed for getInstance when target injectable is a provider function/, "not a provider");
+  });
+
+  it("[newInstance] additional parameters will fail with an error when arg counts don't combine to the expected count", function() {
+    function MyConstructor() {
+      this.x = 123;
+    }
+
+    injector.annotateConstructor(MyConstructor, injector.SINGLETON_SCOPE);
+
+    module.register("MyConstructor", MyConstructor);
+
+    function providerFunction(myConstructedObj, extraParam1, extraParam2) {
+      return "three things: " + myConstructedObj.x + " " + extraParam1 + " " + extraParam2;
+    }
+
+    injector.annotateProvider(providerFunction, injector.PROTOTYPE_SCOPE, "MyConstructor");
+
+    module.register("providedObject", providerFunction);
+    injector.addModuleGroup(module);
+
+    expect.throws(function() {
+      injector.getInstance("providedObject", "abc", "xyz", "ONE TOO MANY");
+    }, /counts did not match/, "one too many additional args");
+  });
+
   it("[newModuleGroup] will simultaneously add a group of injectables to an ModuleGroup -and- add that module to the Injector", function() {
     var anObject = {
       x: 123

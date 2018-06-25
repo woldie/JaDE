@@ -243,10 +243,13 @@ Injector.prototype.annotateProvider = function(provider, flags, injectedParams) 
  * returned rather than a new instance.
  *
  * @param {String} name instance name
+ * @param {*...} additionalParameters additional parameters, only allowed for PROTOTYPE-scope provider functions
  * @returns {Object}
  */
-Injector.prototype.getInstance = function(name) {
-  return this.getInstanceRecursion(name, this.nameStack, this.scopeStack);
+Injector.prototype.getInstance = function(name, additionalParameters) {
+  var allParams = Array.from(arguments);
+
+  return this.getInstanceRecursion(name, this.nameStack, this.scopeStack, allParams.slice(1));
 };
 
 /**
@@ -256,10 +259,11 @@ Injector.prototype.getInstance = function(name) {
  * @param {String} name
  * @param {Array.<String>} nameHistory stack of injectable names that are used to prevent circular dependencies
  * @param {Array.<Scope>} scopeHistory stack of scopes that match up with names
+ * @param {Array.<*>} additionalParameters additional parameters, only allowed for PROTOTYPE-scope provider functions
  * @returns {Object}
  */
-Injector.prototype.getInstanceRecursion = function(name, nameHistory, scopeHistory) {
-  if(nameHistory.indexOf(name) != -1) {
+Injector.prototype.getInstanceRecursion = function(name, nameHistory, scopeHistory, additionalParameters) {
+  if(nameHistory.indexOf(name) !== -1) {
     throw new Error("Circular dependencies not allowed.  Detected in dependency graph for Injectable '" +
       nameHistory[0] + "', name history stack: " + nameHistory);
   }
@@ -268,16 +272,33 @@ Injector.prototype.getInstanceRecursion = function(name, nameHistory, scopeHisto
     injectable, instance, singletonScope,
     i, ii;
 
-  for (i = 0, ii = self.moduleGroups.length; i < ii; i++) {
+  for(i = 0, ii = self.moduleGroups.length; i < ii; i++) {
     injectable = self.moduleGroups[i].getInjectable(name);
 
-    if (!injectable) {
+    if(!injectable) {
       continue;
     }
 
     if(scopeHistory.length && scopeHistory[scopeHistory.length-1] < injectable.scope) {
       throw new Error("Cannot inject " + name + " into " + nameHistory[nameHistory.length-1] +
         ", " + name + " has a wider scope.");
+    }
+
+    if(additionalParameters.length) {
+      if(injectable.type !== InjectableType.PROVIDER_FUNCTION) {
+        throw new Error("Add'l parameters only allowed for getInstance when target injectable is a provider function");
+      }
+
+      var targetFunctionArgs = injectable.subject.length,
+        injectedArgs = injectable.injectedParams.length,
+        additionalArgs = additionalParameters.length,
+        injectedAndAddlArgs = injectedArgs + additionalArgs;
+
+      if(targetFunctionArgs !== injectedAndAddlArgs) {
+        throw new Error("Injectable provider function expected " + targetFunctionArgs + " arguments, but the " +
+          "injected argument (" + injectedArgs + ") and additional argument (" + additionalArgs + ") counts did not " +
+          "match.");
+      }
     }
 
     nameHistory.push(name);
@@ -287,8 +308,9 @@ Injector.prototype.getInstanceRecursion = function(name, nameHistory, scopeHisto
       switch (injectable.scope) {
         case Scope.PROTOTYPE:
           switch (injectable.type) {
+            case InjectableType.PROVIDER_FUNCTION:
             case InjectableType.INJECTED_CONSTRUCTOR:
-              return self.newInjectableInstance(injectable, nameHistory, scopeHistory);
+              return self.newInjectableInstance(injectable, nameHistory, scopeHistory, additionalParameters);
 
             case InjectableType.OBJECT_INSTANCE:
               throw new Error("Not yet implemented");
@@ -304,8 +326,9 @@ Injector.prototype.getInstanceRecursion = function(name, nameHistory, scopeHisto
           }
 
           switch (injectable.type) {
+            case InjectableType.PROVIDER_FUNCTION:
             case InjectableType.INJECTED_CONSTRUCTOR:
-              instance = self.newInjectableInstance(injectable, nameHistory, scopeHistory);
+              instance = self.newInjectableInstance(injectable, nameHistory, scopeHistory, additionalParameters);
               break;
 
             case InjectableType.OBJECT_INSTANCE:
@@ -384,17 +407,20 @@ Injector.prototype.clearScope = function(scope) {
  * @param {Injectable} injectable
  * @param {Array.<String>} nameHistory
  * @param {Array.<Scope>} scopeHistory
+ * @param {Array.<*>} additionalParams additional params, passed from the caller, appended to injected params.
+ * This is only intended for use with PROTOTYPE_SCOPE, provider function type injectables, and should otherwise
+ * always be an empty array
  * @returns {Object}
  */
-Injector.prototype.newInjectableInstance = function(injectable, nameHistory, scopeHistory) {
+Injector.prototype.newInjectableInstance = function(injectable, nameHistory, scopeHistory, additionalParams) {
   var j, jj,
     params = [];
 
   for (j = 0, jj = injectable.injectedParams.length; j < jj; j++) {
-    params.push(this.getInstanceRecursion(injectable.injectedParams[j], nameHistory, scopeHistory));
+    params.push(this.getInstanceRecursion(injectable.injectedParams[j], nameHistory, scopeHistory, []));
   }
 
-  return injectable.newInstance(params);
+  return injectable.newInstance(params.concat(additionalParams));
 };
 
 module.exports = Injector;
