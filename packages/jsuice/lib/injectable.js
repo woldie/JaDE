@@ -164,6 +164,16 @@ Injectable.prototype.newInstance = function(params) {
   var self = this;
 
   if (self.type === InjectableType.PROVIDER_FUNCTION) {
+    var passedParamsCount = params.length,
+      expectedParamsCount = self.subject.length;
+
+    if(expectedParamsCount > passedParamsCount) {
+      throw new Error("Injectable provider " + self.name + " expected " + expectedParamsCount + " arguments, " +
+        "but " + passedParamsCount + " were passed.  If " + self.name + " expected addtional arguments " +
+        "to be passed, then it must not be used as an injected dependency of another injectable and may only be " +
+        "instantiated via a direct call to getInstance() with additional parameters passed.");
+    }
+
     return self.subject.apply(null, params);
   }
 

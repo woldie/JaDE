@@ -298,6 +298,31 @@ describe("injector", function() {
     }, /counts did not match/, "one too many additional args");
   });
 
+  it("[newInstance] will fail as expected when a provider expecting additional parameters is a dependency of another injectable", function() {
+    function providedObject(additionalParameter1, additionalParameter2) {
+      return {
+        bob: "loblaw",
+        one: additionalParameter1,
+        two: additionalParameter2
+      };
+    }
+
+    injector.annotateProvider(providedObject, injector.PROTOTYPE_SCOPE /* additional parameters intentionally NOT listed here */);
+    module.register("providedObject", providedObject);
+
+    function MyConstructor(providedObject) {
+      this.x = providedObject;
+    }
+
+    injector.annotateConstructor(MyConstructor, injector.PROTOTYPE_SCOPE, "providedObject");
+    module.register("MyConstructor", MyConstructor);
+    injector.addModuleGroup(module);
+
+    expect.throws(function() {
+      injector.getInstance("MyConstructor");
+    }, /Injectable provider providedObject expected 2 arguments, but 0 were passed/, "impossible to feed additional args to dependent injectable");
+  });
+
   it("[newModuleGroup] will simultaneously add a group of injectables to an ModuleGroup -and- add that module to the Injector", function() {
     var anObject = {
       x: 123
