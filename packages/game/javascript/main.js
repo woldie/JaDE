@@ -18,14 +18,17 @@ var PixiApplication = require("@pixi/app").Application,
   $ = require("jquery"),
 
   runStory = require("./runStory"),
-  testInkJson = require("../dialogue/test.json"),
-  jadeModule = require("./jadeModule");
+  //testInkJson = require("../dialogue/test.json"),
+
+  injector = require("jsuice");
+
+require("./jadeModule");
 
 var app = new PixiApplication({
   width: 256,         // default: 800
   height: 256,        // default: 600
   antialias: true,    // default: false
-  transparent: false, // default:    false
+  transparent: false, // default: false
   resolution: 1,      // default: 1
   forceCanvas: PixiUtils.isWebGLSupported() ? "WebGL" : "canvas"
 });
@@ -34,4 +37,8 @@ $(document.body).append(app.view);
 
 app.renderer.backgroundColor = 0x061639;
 
-runStory(testInkJson);
+// runStory(testInkJson);
+
+var renderLoop = /** @type {RenderLoop} */ injector.getInstance("RenderLoop");
+
+renderLoop.start();

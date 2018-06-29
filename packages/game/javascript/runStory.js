@@ -15,7 +15,6 @@
 
 var inkjs = require("inkjs"),
   $ = require("jquery"),
-  rx = require("rx"),
 
   choiceLink = require("../content/choiceLink.hbs"),
   testStoryDiv = require("../content/testStoryDiv.hbs"),

@@ -1,4 +1,5 @@
-var injector = require("jsuice");
+var injector = require("jsuice"),
+  filter = require("rxjs/operators").filter;
 
 function RenderLoop(animationFrameObservable) {
   /**
@@ -18,8 +19,9 @@ RenderLoop.prototype.start = function() {
   var self = this;
 
   self.animationFrameObservable
-    .subscribe(function() {
+    .subscribe(function(frameTime) {
       self.frameId++;
+//      console.log("current frame: " + self.frameId + ", time: " + frameTime);
     });
 };
 

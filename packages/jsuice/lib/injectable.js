@@ -1,8 +1,6 @@
 "use strict";
 
-var  expect = require("expectant"),
-
-  InjectableType = require("./injectableType"),
+var InjectableType = require("./injectableType"),
   Scope = require("./scope");
 
 function Injectable(subject, injectableName) {
@@ -77,7 +75,7 @@ function Injectable(subject, injectableName) {
 
     default:
       throw new Error("For module " + injectableName + ", subject was expected to be either an object or a " +
-        "function.");
+        "function, but we found " + type);
   }
 
   /**
