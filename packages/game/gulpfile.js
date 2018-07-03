@@ -23,7 +23,7 @@ var fs = require("fs"),
   //xargs = require("xargs"),
   gulpWatch = require("gulp-watch"),
   gulpWebpack = require("webpack-stream"),
-  HtmlWebpackPlugin = require("html-webpack-plugin");
+  webpackConfig = require("./etc/webpackConfig");
 
 var isWindows = os.platform() === "win32";
 
@@ -44,7 +44,7 @@ gulp.task("watch-ink", function() {
 
 gulp.task("watch-webpack", function() {
   return gulp.src("javascript/main.js")
-    .pipe(gulpWebpack(webpackConfig(true)))
+    .pipe(gulpWebpack(webpackConfig(true), require("webpack")))
     .pipe(gulp.dest("dist/"));
 });
 
@@ -71,6 +71,7 @@ gulp.task("jade-harness", function(done) {
   // configures webpack to make a jade.js (for running a harness)
   var config = webpackConfig(true);
   config.output.path = path.resolve("./intermediate");
+  config.devServer.contentBase = path.resolve("./intermediate");
 
   var jadeScriptServer = new WebpackDevServer(
     webpack(config),
@@ -136,30 +137,6 @@ gulp.task("unit", function(done) {
 
   karmaServer.start();
 });
-
-function webpackConfig(watch) {
-  var entryObj = {};
-
-  entryObj["game"] = path.resolve(__dirname, "./javascript/main.js");
-
-  return {
-    watch: watch,
-    entry: entryObj,
-    module: {
-      loaders: [
-        { test: /\.css$/, loader: "style!css" },
-        { test: /\.hbs$/, loader: "handlebars-loader" }
-      ]
-    },
-    plugins: [
-      new HtmlWebpackPlugin()
-    ],
-    output: {
-      libraryTarget: "this",
-      filename: "JaDE.js"
-    }
-  };
-}
 
 function invokeInklecateCompiler() {
   if(!process.env.INKLECATE_COMPILER) {

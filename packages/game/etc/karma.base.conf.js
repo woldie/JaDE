@@ -17,34 +17,37 @@
 /* jshint -W079 */
 var path = require("path"),
   fs = require("fs"),
-  _ = require("lodash");
+  _ = require("lodash"),
+  webpackConfig = require("./webpackConfig");
 
 function makeTestingWebpackConfig(outputModuleName) {
   var entryObj = {};
 
   entryObj[outputModuleName] = path.resolve(__dirname, "./testingMain.js");
 
-  return {
-    entry: entryObj,
-    devtool: "inline-source-map",
-    resolve: {
-      extensions: [ ".js", "" ],
-      modulesDirectories: [ "node_modules" ]
-    },
-    plugins: [
-    ],
-    module: {
-      loaders: [
-        { test: /\.css$/, loader: "style!css" },
-        { test: /\.hbs$/, loader: "handlebars-loader" }
-      ]
-    },
-    output: {
-      libraryTarget: "this",
-      path: path.resolve("../intermediate"),
-      filename: outputModuleName + ".js"
-    }
-  };
+  return webpackConfig(false);
+
+  //return {
+  //  entry: entryObj,
+  //  devtool: "inline-source-map",
+  //  resolve: {
+  //    extensions: [ ".js", "" ],
+  //    modulesDirectories: [ "node_modules" ]
+  //  },
+  //  plugins: [
+  //  ],
+  //  module: {
+  //    loaders: [
+  //      { test: /\.css$/, loader: "style!css" },
+  //      { test: /\.hbs$/, loader: "handlebars-loader" }
+  //    ]
+  //  },
+  //  output: {
+  //    libraryTarget: "this",
+  //    path: path.resolve("../intermediate"),
+  //    filename: outputModuleName + ".js"
+  //  }
+  //};
 }
 
 module.exports = function(config) {
@@ -59,7 +62,7 @@ module.exports = function(config) {
     frameworks: ["mocha", "proclaim", "quixote"],
 
     plugins: [
-      require("karma-webpack-with-fast-source-maps"),
+      require("karma-webpack"),
       require("karma-mocha"),
       require("karma-mocha-reporter"),
       require("karma-proclaim"),

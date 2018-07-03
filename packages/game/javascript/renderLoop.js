@@ -1,5 +1,8 @@
-var injector = require("jsuice"),
-  filter = require("rxjs/operators").filter;
+"use strict";
+
+import * as PIXI from "pixi.js";
+
+var injector = require("jsuice");
 
 function RenderLoop(animationFrameObservable) {
   /**
@@ -25,4 +28,4 @@ RenderLoop.prototype.start = function() {
     });
 };
 
-module.exports = injector.annotateConstructor(RenderLoop, injector.PROTOTYPE_SCOPE, "animationFrameObservable");
+export default injector.annotateConstructor(RenderLoop, injector.PROTOTYPE_SCOPE, "animationFrameObservable");

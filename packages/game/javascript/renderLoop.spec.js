@@ -1,8 +1,7 @@
 "use strict";
 
-var TestScheduler = require("rxjs/testing").TestScheduler,
-
-  RenderLoop = require("./renderLoop");
+import RenderLoop from "./renderLoop";
+import * as RxTesting from "rxjs/testing";
 
 describe("renderLoop", function() {
   /** @type {RenderLoop} */
@@ -11,7 +10,7 @@ describe("renderLoop", function() {
     mockScheduler;
 
   beforeEach(function() {
-    mockScheduler = new TestScheduler();
+    mockScheduler = new RxTesting.TestScheduler();
   });
 
   it("[start] will increment the frameId every time there is an animationFrame page flip", function() {

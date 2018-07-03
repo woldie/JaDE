@@ -13,9 +13,9 @@
 
 "use strict";
 
-var PixiApplication = require("@pixi/app").Application,
-  PixiUtils = require("@pixi/utils"),
-  $ = require("jquery"),
+import * as PIXI from "pixi.js";
+
+var $ = require("jquery"),
 
   runStory = require("./runStory"),
   //testInkJson = require("../dialogue/test.json"),
@@ -24,18 +24,34 @@ var PixiApplication = require("@pixi/app").Application,
 
 require("./jadeModule");
 
-var app = new PixiApplication({
+var app = new PIXI.Application({
   width: 256,         // default: 800
   height: 256,        // default: 600
-  antialias: true,    // default: false
+  antialias: false,   // default: false
   transparent: false, // default: false
   resolution: 1,      // default: 1
-  forceCanvas: PixiUtils.isWebGLSupported() ? "WebGL" : "canvas"
+  forceCanvas: PIXI.utils.isWebGLSupported() ? "WebGL" : "canvas"
 });
+
+app.renderer.autoResize = true;
+app.renderer.resize(512, 512);
 
 $(document.body).append(app.view);
 
 app.renderer.backgroundColor = 0x061639;
+
+PIXI.loader
+  .add({
+    name: "fighter_01",
+    url: require("../tiles/fighter_01.png")
+  })
+  .load(function() {
+    console.log(PIXI.loader.resources["fighter_01"].texture);
+
+    var sprite = new PIXI.Sprite(PIXI.loader.resources["fighter_01"].texture);
+
+    app.stage.addChild(sprite);
+  });
 
 // runStory(testInkJson);
 

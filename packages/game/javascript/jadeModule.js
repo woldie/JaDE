@@ -1,9 +1,10 @@
 "use strict";
 
+import RenderLoop from "./renderLoop";
+
 var Rx = require("rxjs"),
   injector = require("jsuice"),
 
-  RenderLoop = require("./renderLoop"),
   animationFrameObservable = require("./animationFrameObservable");
 
 injector.newModuleGroup("jade", [
