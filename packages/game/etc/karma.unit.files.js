@@ -30,6 +30,7 @@ if(typeof window !== "undefined") {
   var testsContext = require.context("../javascript", true, /(\.spec)$/);
 
   function inManifest(path) {
+    console.log(__karmaWebpackManifest__);
     return __karmaWebpackManifest__.indexOf(path) >= 0;
   }
 

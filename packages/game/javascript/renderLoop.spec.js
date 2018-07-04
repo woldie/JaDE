@@ -21,6 +21,6 @@ describe("renderLoop", function() {
 
     mockScheduler.flush();
 
-    expect.equals(2, renderLoop.frameId, "FrameID advanced twice because the scheduler fired twice")
+    expect.equals(2, renderLoop.frameId, "FrameID advanced twice because the scheduler fired twice");
   });
 });

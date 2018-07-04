@@ -30,7 +30,7 @@
     "karma-quixote": "^1.0.0",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-super-dots-reporter": "^0.2.0",
-    "karma-webpack": "^3.0.0",
+    "karma-webpack-with-fast-source-maps": "^1.10.2",
     "minimatch": "^3.0.4",
     "mocha": "^5.2.0",
     "plugin-error": "^1.0.1",

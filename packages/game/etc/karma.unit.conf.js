@@ -23,10 +23,10 @@ module.exports = function(config) {
     configOverrides;
 
   configOverrides = {
-    // list of files / patterns to load in the browser
+    // list of files / patterns to watch and load in the browser
     files: [
-      path.resolve(__dirname, "testingMain.js"),
-      path.resolve(__dirname, "karma.unit.files.js")
+      { pattern: "etc/testingMain.js", watched: true },
+      { pattern: "etc/karma.unit.files.js", watched: true }
     ],
 
     // preprocess matching files before serving them to the browser
@@ -35,8 +35,8 @@ module.exports = function(config) {
   };
 
   // this redundant preprocessor seems necessary to get the files item on line 36 (bootstrap/main.js) to be webpack'ed
-  configOverrides.preprocessors[path.resolve(__dirname, "karma.unit.files.js")] = ["webpack"];
-  configOverrides.preprocessors[path.resolve(__dirname, "testingMain.js")] = ["webpack"];
+  configOverrides.preprocessors["etc/karma.unit.files.js"] = ["webpack"];
+  configOverrides.preprocessors["etc/testingMain.js"] = ["webpack"];
 
   return _.extend(baseKarmaConfig, configOverrides);
 };

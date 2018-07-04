@@ -5,15 +5,13 @@ var Rx = require("rxjs"),
   repeat = require("rxjs/operators").repeat,
   injector = require("jsuice");
 
-function animationFrameObservable(animationFrameScheduler) {
-  return Rx.defer(() =>
-    Rx.of(animationFrameScheduler.now(), animationFrameScheduler)
-      .pipe(
-        repeat(),
-        map((start) => animationFrameScheduler.now() - start)
-      )
-  );
+function createAnimationFrameObservable(animationFrameScheduler) {
+  return Rx.of(animationFrameScheduler.now(), animationFrameScheduler)
+    .pipe(
+      repeat(),
+      map((start) => animationFrameScheduler.now() - start)
+    );
 }
 
-module.exports = injector.annotateProvider(animationFrameObservable, injector.PROTOTYPE_SCOPE,
+module.exports = injector.annotateProvider(createAnimationFrameObservable, injector.PROTOTYPE_SCOPE,
   "animationFrameScheduler");

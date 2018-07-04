@@ -9,7 +9,7 @@ function webpackConfig(watch) {
 
   var configObj = {
     devServer: {},
-    devtool: 'inline-source-map',
+    devtool: 'cheap-module-source-map',
     entry: entryObj,
     mode: 'development',
     module: {

@@ -26,28 +26,6 @@ function makeTestingWebpackConfig(outputModuleName) {
   entryObj[outputModuleName] = path.resolve(__dirname, "./testingMain.js");
 
   return webpackConfig(false);
-
-  //return {
-  //  entry: entryObj,
-  //  devtool: "inline-source-map",
-  //  resolve: {
-  //    extensions: [ ".js", "" ],
-  //    modulesDirectories: [ "node_modules" ]
-  //  },
-  //  plugins: [
-  //  ],
-  //  module: {
-  //    loaders: [
-  //      { test: /\.css$/, loader: "style!css" },
-  //      { test: /\.hbs$/, loader: "handlebars-loader" }
-  //    ]
-  //  },
-  //  output: {
-  //    libraryTarget: "this",
-  //    path: path.resolve("../intermediate"),
-  //    filename: outputModuleName + ".js"
-  //  }
-  //};
 }
 
 module.exports = function(config) {
@@ -62,14 +40,15 @@ module.exports = function(config) {
     frameworks: ["mocha", "proclaim", "quixote"],
 
     plugins: [
-      require("karma-webpack"),
+      // this fork of karma-webpack gives me incremental test runs, but is out-of-date with webpack 4, seek
+      // a replacement someday
+      require("karma-webpack-with-fast-source-maps"),
       require("karma-mocha"),
       require("karma-mocha-reporter"),
       require("karma-proclaim"),
       require("karma-quixote"),
       require("karma-chrome-launcher"),
       require("karma-firefox-launcher"),
-      require("karma-sourcemap-loader"),
       require("karma-super-dots-reporter")
     ],
 
@@ -127,7 +106,7 @@ module.exports = function(config) {
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
-    logLevel: config.LOG_DEBUG,
+    logLevel: config.LOG_INFO,
 
     // A list of log appenders to be used
     loggers: [{type: 'console'}],
