@@ -3,6 +3,15 @@
   "packages": [
     "packages/*"
   ],
+  "command": {
+    "run": {
+      "stream": true,
+      "parallel": true
+    },
+    "bootstrap": {
+      "stream": true
+    }
+  },
   "loglevel": "info",
   "version": "independent"
 }
