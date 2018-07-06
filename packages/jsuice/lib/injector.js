@@ -109,14 +109,14 @@ Injector.prototype.EAGER_FLAG = 128;
  * constructor is converted into a proper module that can be added to a module group.
  *
  * @param {Function} ctor constructor function
- * @param {Number=} flags integer containing flags (as set bits) that describe what the scope and configuration flags
- * should be for the constructor
- * @param {...String=} injectedParams injected parameters that need to be constructed into the instance at time of
+ * @param {(Number|String)=} flags optional integer containing flags (as set bits) that describe what the scope and
+ * configuration flags should be for the constructor, defaults to PROTOTYPE_SCOPE.
+ * @param {...(Number|String)=} injectedParams injected parameters that need to be constructed into the instance at time of
  * instantiation
  * @returns {Function} annotated constructor function that is suitable to be added as a module to a module group
  * @see {@link Injector#newModuleGroup}
  */
-Injector.prototype.annotateConstructor = function(ctor, flags, injectedParams) {
+ Injector.prototype.annotateConstructor = function(ctor, flags, injectedParams) {
   var argList = Array.from(arguments),
     metaObj = {
       injectedParams: (argList.length > 2) ? argList.slice(2) : [],
@@ -243,10 +243,10 @@ Injector.prototype.annotateProvider = function(provider, flags, injectedParams) 
  * returned rather than a new instance.
  *
  * @param {String} name instance name
- * @param {*...} additionalParameters additional parameters, only allowed for PROTOTYPE-scope provider functions
+ * @param {...*} [additionalParameters] additional parameters, only allowed for PROTOTYPE-scope provider functions
  * @returns {Object}
  */
-Injector.prototype.getInstance = function(name, additionalParameters) {
+Injector.prototype.getInstance = function(name) {
   var allParams = Array.from(arguments);
 
   return this.getInstanceRecursion(name, this.nameStack, this.scopeStack, allParams.slice(1));

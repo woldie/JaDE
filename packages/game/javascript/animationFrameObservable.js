@@ -1,17 +1,17 @@
 "use strict";
 
-var Rx = require("rxjs"),
-  map = require("rxjs/operators").map,
-  repeat = require("rxjs/operators").repeat,
-  injector = require("jsuice");
+import * as Rx from "rxjs";
+import { map, repeat } from "rxjs/operators";
+import { injector } from "jsuice";
 
-function createAnimationFrameObservable(animationFrameScheduler) {
-  return Rx.of(animationFrameScheduler.now(), animationFrameScheduler)
-    .pipe(
+function provideAnimationFrameObservable(animationFrameScheduler) {
+  return Rx.defer(function() {
+    Rx.of(animationFrameScheduler.now(), animationFrameScheduler).pipe(
       repeat(),
       map((start) => animationFrameScheduler.now() - start)
-    );
+    )
+  });
 }
 
-module.exports = injector.annotateProvider(createAnimationFrameObservable, injector.PROTOTYPE_SCOPE,
+export default injector.annotateProvider(provideAnimationFrameObservable, injector.SINGLETON_SCOPE,
   "animationFrameScheduler");

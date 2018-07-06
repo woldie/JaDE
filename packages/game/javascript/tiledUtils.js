@@ -14,7 +14,11 @@
 "use strict";
 
 import { injector } from "jsuice";
-import "./jadeModule";
 
-var init = /** @type {Init} */ injector.getInstance("init");
-init.run();
+var _TileUtilities = require("tiled-utils");
+
+function provideTiledUtils(PIXI) {
+  return new _TileUtilities(PIXI);
+}
+
+export default injector.annotateProvider(provideTiledUtils, injector.SINGLETON_SCOPE, "PIXI");

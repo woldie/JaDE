@@ -19,4 +19,4 @@
 
 var Injector = require("./lib/injector");
 
-module.exports = new Injector();
+export var injector = new Injector();
