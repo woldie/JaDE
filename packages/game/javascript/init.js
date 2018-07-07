@@ -14,13 +14,19 @@ class Init {
    * @param {RenderLoop} renderLoop
    */
   constructor(tiledUtils, renderLoop) {
+    var self = this;
+
     /**
      * @name Init#tiledUtils
      * @type {TileUtilities}
      */
-    this.tiledUtils = tiledUtils;
+    self.tiledUtils = tiledUtils;
 
-    this.app = new PIXI.Application({
+    /**
+     * @name Init#app
+     * @type {PIXI.Application}
+     */
+    self.app = new PIXI.Application({
       width: 256,         // default: 800
       height: 256,        // default: 600
       antialias: false,   // default: false
@@ -29,9 +35,9 @@ class Init {
       forceCanvas: PIXI.utils.isWebGLSupported() ? "WebGL" : "canvas"
     });
 
-    this.app.renderer.autoResize = true;
-    this.app.renderer.resize(512, 512);
-    this.app.renderer.backgroundColor = 0x061639;
+    self.app.renderer.autoResize = true;
+    self.app.renderer.resize(512, 512);
+    self.app.renderer.backgroundColor = 0x061639;
 
     $(document.body).append(this.app.view);
 
@@ -47,10 +53,16 @@ class Init {
         name: "fighter_01",
         url: require("../tiles/fighter_01.png")
       })
-      .load(function() {
-        var sprite = new PIXI.Sprite(PIXI.loader.resources["fighter_01"].texture);
-
-        self.app.stage.addChild(sprite);
+      .add({
+        name: "tiled-example-ortho-outdoor",
+        url: require("../tilesets/tiled-example-ortho-outdoor.png")
+      })
+      .load(function(loader, resources) {
+        //var sprite = new PIXI.Sprite(PIXI.loader.resources["fighter_01"].texture);
+        //
+        //self.app.stage.addChild(sprite);
+        var world = self.tiledUtils.makeTiledWorld(require("../maps/testmap.json"), "tiled-example-ortho-outdoor");
+        self.app.stage.addChild(world);
       });
 
     // runStory(testInkJson);
