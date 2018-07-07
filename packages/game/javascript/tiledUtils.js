@@ -14,11 +14,12 @@
 "use strict";
 
 import { injector } from "jsuice";
+import * as PIXI from "pixi.js";
 
 var _TileUtilities = require("tiled-utils");
 
-function provideTiledUtils(PIXI) {
+function provideTiledUtils() {
   return new _TileUtilities(PIXI);
 }
 
-export default injector.annotateProvider(provideTiledUtils, injector.SINGLETON_SCOPE, "PIXI");
+export default injector.annotateProvider(provideTiledUtils, injector.SINGLETON_SCOPE);

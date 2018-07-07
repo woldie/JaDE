@@ -1,6 +1,8 @@
 "use strict";
 
 import { injector } from "jsuice";
+import * as PIXI from "pixi.js";
+import $ from "jquery";
 
 // testInkJson = require("../dialogue/test.json");
 // import runStory from "./runStory";
@@ -8,18 +10,10 @@ import { injector } from "jsuice";
 
 class Init {
   /**
-   * @param {PIXI} PIXI
    * @param {TileUtilities} tiledUtils
    * @param {RenderLoop} renderLoop
-   * @param {jQuery} $
    */
-  constructor(PIXI, tiledUtils, renderLoop, $) {
-    /**
-     * @name Init#PIXI
-     * @type {PIXI}
-     */
-    this.PIXI = PIXI;
-
+  constructor(tiledUtils, renderLoop) {
     /**
      * @name Init#tiledUtils
      * @type {TileUtilities}
@@ -46,8 +40,7 @@ class Init {
   }
 
   run() {
-    var self = this,
-      PIXI = self.PIXI;
+    var self = this;
 
     PIXI.loader
       .add({
@@ -64,4 +57,4 @@ class Init {
   }
 }
 
-export default injector.annotateConstructor(Init, injector.SINGLETON_SCOPE, "PIXI", "tiledUtils", "renderLoop", "$");
+export default injector.annotateConstructor(Init, injector.SINGLETON_SCOPE, "tiledUtils", "renderLoop");
