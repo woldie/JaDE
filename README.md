@@ -58,6 +58,9 @@ Fedora:
     qmake-qt5
     make
 
+Your Linux package manager may also have a prebuilt Tiled package you can install.  The Tiled website has downloadable
+installers for Windows systems.
+
 ## Installing Node.js
 
 Node.js and npm are used to host the JaDE build tools.  Please ensure you have a recent version of Node.js and npm
@@ -101,3 +104,18 @@ If you want to build a distribution of your game, run:
     lerna run {COMING SOON}
     
 And all of the compiled files you need to play your game will be saved to the `dist` folder.
+
+# Game Development Recipes
+
+## Creating a handmade area map
+ 
+* In Tiled, select File | New ...
+  * In the New dialog, select `Orthogonal`, `CSV`, `Right Down`, and then set your map height and width to the desired
+    size and the pixel height/width of the tiles in the map to 16x16.
+* In the Tilesets pane, create a new tileset by loading a .png containing your tile graphics.  Your .png should be 384 
+  pixels wide (24 tiles in width) and some multiple of 16 pixels high.
+  * By convention, save your tileset .png files and any other javascript or JSON related to each tileset to the 
+    tilesets/ folder.
+* When saving your handmade area maps from Tiled, use File | Save ...
+  * In the Save dialog, use the dropdown for indicating file format and select `JSON Map Files`.
+  * By convention, save your map JSON files to the maps/ folder.
