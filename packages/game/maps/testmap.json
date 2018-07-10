@@ -10,8 +10,52 @@
          "width":100,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "height":100,
+         "name":"objects",
+         "objects":[
+                {
+                 "height":15,
+                 "id":1,
+                 "name":"playerstart",
+                 "rotation":0,
+                 "type":"Start",
+                 "visible":true,
+                 "width":15,
+                 "x":177,
+                 "y":128
+                }, 
+                {
+                 "height":15,
+                 "id":2,
+                 "name":"Troll",
+                 "properties":
+                    {
+                     "agroLimit":"3",
+                     "agroRadius":"2"
+                    },
+                 "propertytypes":
+                    {
+                     "agroLimit":"string",
+                     "agroRadius":"string"
+                    },
+                 "rotation":0,
+                 "type":"Badguy",
+                 "visible":true,
+                 "width":16,
+                 "x":112,
+                 "y":194
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "width":100,
+         "x":0,
+         "y":0
         }],
- "nextobjectid":1,
+ "nextobjectid":4,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tileheight":16,

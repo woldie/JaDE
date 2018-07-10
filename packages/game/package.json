@@ -28,6 +28,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "karma-proclaim": "^1.0.0",
     "karma-quixote": "^1.0.0",
+    "karma-sinon": "^1.0.5",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-super-dots-reporter": "^0.2.0",
     "karma-webpack-with-fast-source-maps": "^1.10.2",
@@ -35,6 +36,7 @@
     "mocha": "^5.2.0",
     "plugin-error": "^1.0.1",
     "quixote": "^0.14.0",
+    "sinon": "^6.1.3",
     "webpack": "4.14.0",
     "webpack-dev-middleware": "3.1.3",
     "webpack-dev-server": "3.1.4",
@@ -51,6 +53,7 @@
     "jsuice": "^0.0.1",
     "lodash": "^4.17.10",
     "pixi.js": "^4.8.1",
+    "prando": "^3.0.3",
     "rxjs": "^6.2.0",
     "tiled-utils": "^3.1.8"
   }

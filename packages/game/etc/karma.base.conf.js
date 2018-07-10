@@ -37,7 +37,7 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ["mocha", "proclaim", "quixote"],
+    frameworks: ["mocha", "sinon", "proclaim", "quixote"],
 
     plugins: [
       // this fork of karma-webpack gives me incremental test runs, but is out-of-date with webpack 4, seek
@@ -46,6 +46,7 @@ module.exports = function(config) {
       require("karma-mocha"),
       require("karma-mocha-reporter"),
       require("karma-proclaim"),
+      require("karma-sinon"),
       require("karma-quixote"),
       require("karma-chrome-launcher"),
       require("karma-firefox-launcher"),
