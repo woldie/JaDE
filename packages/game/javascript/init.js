@@ -4,6 +4,7 @@ import { injector } from "jsuice";
 import * as PIXI from "pixi.js";
 import $ from "jquery";
 import MapAsset from "./assets/mapAsset";
+import AnimatedSpriteAsset from "./assets/animatedSpriteAsset";
 
 // testInkJson = require("../dialogue/test.json");
 // import runStory from "./runStory";
@@ -49,16 +50,22 @@ class Init {
   run() {
     var self = this,
 
-      handmadeMap = new MapAsset("testmap", "tiled-example-ortho-outdoor");
+      handmadeMap = new MapAsset("testmap", "tiled-example-ortho-outdoor"),
+      fighterSprite = new AnimatedSpriteAsset("fighter", [
+        { frameset: "default", frameCount: 1 }
+      ]);
 
     self.assetManager.loadAll([
-      handmadeMap
+      handmadeMap,
+      fighterSprite
 
       // TODO:  create an animated sprite generator/loader class that will serve as an object sprite we will replace in the handmadeMap
     ]).then(function(assets) {
       // this is where game-specific world randomization and trigger prepping occurs
 
+      // when the game starts, one map is selected for
       self.app.stage.addChild(handmadeMap.areaMap);
+      self.app.stage.addChild(fighterSprite.sprite);
     }, function() {
       alert("failed to load?!");
     });

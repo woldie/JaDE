@@ -7,6 +7,7 @@ import * as PIXI from "pixi.js";
 import provideAnimationFrameObservable from "./animationFrameObservable";
 import provideTiledUtils from "./tiledUtils";
 import MapAssetLoader from "./assets/mapAssetLoader";
+import AnimatedSpriteAssetLoader from "./assets/animatedSpriteAssetLoader";
 import AssetManager from "./assetManager";
 import RenderLoop from "./renderLoop";
 import Init from "./init";
@@ -19,5 +20,6 @@ injector.newModuleGroup("jade", [
   "tiledUtils", provideTiledUtils,
   "PIXI", PIXI,
   "mapAssetLoader", MapAssetLoader,
+  "animatedSpriteAssetLoader", AnimatedSpriteAssetLoader,
   "assetManager", AssetManager
 ]);

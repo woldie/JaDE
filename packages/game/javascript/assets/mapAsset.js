@@ -11,6 +11,8 @@ import Asset from "./asset"
  * @extends {Asset}
  */
 function MapAsset(mapName, tilesetName) {
+  Asset.call(this);
+
   /**
    * @name MapAsset#tilesetName
    * @type {String}

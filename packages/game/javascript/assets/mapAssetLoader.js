@@ -13,6 +13,8 @@ import MapAsset from "./mapAsset"
  * @extends {AssetLoader}
  */
 function MapAssetLoader(PIXI, tiledUtils) {
+  AssetLoader.call(this);
+
   /**
    * @name MapAssetLoader#tiledUtils
    * @type {TileUtilities}
