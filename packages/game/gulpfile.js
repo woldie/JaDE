@@ -27,6 +27,13 @@ var fs = require("fs"),
 
 var isWindows = os.platform() === "win32";
 
+// Helper for poor windows hosts that don't know how to broadast Ctrl-c signals properly
+process.on('SIGINT', function() {
+  setTimeout(function() {
+    process.exit(1);
+  }, 500);
+});
+
 gulp.task("default", function() {
   throw new Error("Make this do a full build someday");
 });
@@ -37,7 +44,6 @@ gulp.task("watch-ink", function() {
 
   // then put it into watcher mode
   return gulpWatch("dialogue/*.ink", function() {
-    // call once immediately
     return invokeInklecateCompiler();
   });
 });
@@ -60,6 +66,7 @@ gulp.task("watch-unit", function(done) {
   karmaServer.start();
 });
 
+// sets up a test page you can use to play with the game code http://localhost:8888
 gulp.task("jade-harness", function(done) {
   var webpack = require("webpack"),
     WebpackDevServer = require("webpack-dev-server");
@@ -94,7 +101,11 @@ gulp.task("jade-harness", function(done) {
         aggregateTimeout: 100
       },
       publicPath: "/",
-      stats: { colors: true },
+      stats: {
+        // fallback value for stats options when an option is not defined (has precedence over local webpack defaults)
+        all: undefined,
+        colors: false
+      },
 
       // Set this as true if you want to access dev server from arbitrary url.
       // This is handy if you are using a html5 router.

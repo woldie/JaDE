@@ -56,18 +56,25 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ["super-dots", "mocha"],
+    reporters: ["mocha"],
 
     mochaReporter: {
-      output: "minimal",
-      colors: {
-        info: "cyan"
-      }
+      symbols: {
+        success: ".",
+        info: "i",
+        warning: "?",
+        failure: "X"
+      },
+      output: "full",
+      showDiff: true,
+      colors: false
     },
 
     superDotsReporter: {
       icon: {
-        success: "."
+        success: ".",
+        failure: "X",
+        ignore: "i"
       }
     },
 
@@ -103,14 +110,14 @@ module.exports = function(config) {
     port: 9876,
 
     // enable / disable colors in the output (reporters and logs)
-    colors: true,
+    colors: false,
 
     // level of logging
     // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
     logLevel: config.LOG_INFO,
 
-    // A list of log appenders to be used
-    loggers: [{type: 'console'}],
+    // A list of log appenders to be used, with color output disabled for karma's logging itself
+    loggers: [{type: 'console', layout: { type: 'basic'} }],
 
     // When true, this will start the karma server in another process, writing no output to the console.
     detached: false,

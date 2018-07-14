@@ -41,6 +41,13 @@ function webpackConfig(watch) {
     output: {
       libraryTarget: "this",
       filename: "JaDE.js"
+    },
+    stats: {
+      // fallback value for stats options when an option is not defined (has precedence over local webpack defaults)
+      all: undefined,
+
+      // `webpack --no-colors` equivalent
+      colors: false
     }
   };
 

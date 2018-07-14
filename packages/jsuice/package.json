@@ -5,12 +5,13 @@
   "private": false,
   "main": "index.js",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha ./lib/**/*.spec.js",
-    "dev": "./node_modules/mocha/bin/mocha --watch ./lib/**/*.spec.js"
+    "test": "cross-env-shell mocha --no-colors ./lib/**/*.spec.js",
+    "dev": "cross-env-shell mocha --no-colors --watch ./lib/**/*.spec.js"
   },
   "author": "woldie",
   "license": "Apache-2.0",
   "devDependencies": {
+    "cross-env": "^5.2.0",
     "expectant": "^0.0.1",
     "lodash": "^4.17.10",
     "mocha": "^5.2.0",
