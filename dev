@@ -1,0 +1,4 @@
+#!/bin/sh
+
+(cd packages/jsuice; npm run dev) &
+(cd packages/game; npm run dev)

@@ -85,7 +85,7 @@ files that make up your game's content.  Use these commands before attempting to
     npm install --global lerna
     lerna bootstrap
 
-NOTE:  Any time you edit any `package.json` files in the `game` folder or other folders, you must run
+**IMPORTANT NOTE**:  Any time you edit any `package.json` files in the `game` folder or other folders, you must run
 `lerna bootstrap` again.
 
 # Building JaDE
@@ -93,15 +93,15 @@ NOTE:  Any time you edit any `package.json` files in the `game` folder or other 
 We provide a 'hot' development mode that automatically rebuilds and reloads files as you edit and save them in your 
 text editor and creation tools:
 
-    lerna run dev
+    ./dev
 
 The progress of JavaScript unit tests and Inklecate compilations can be observed on the command-line.  And, you may 
-visit an auto-updating copy of your running JaDE game on your local at:  {COMING SOON}.  If the auto-update function
-does not work, you can always hit Refresh on your browser.
+visit an auto-updating copy of your running JaDE game on your local at:  http://localhost:8888/  If the auto-update
+function does not work, you can always hit Refresh on your browser.
 
-If you want to build a distribution of your game, run:
+If you want to build a distribution of your game {COMING SOON}, run:
 
-    lerna run {COMING SOON}
+    ./dist
     
 And all of the compiled files you need to play your game will be saved to the `dist` folder.
 
