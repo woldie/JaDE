@@ -269,7 +269,7 @@ Injector.prototype.getInstanceRecursion = function(name, nameHistory, scopeHisto
   }
 
   var self = this,
-    injectable, instance, singletonScope,
+    injectable, instance, singletonScope, previousScope,
     i, ii;
 
   for(i = 0, ii = self.moduleGroups.length; i < ii; i++) {
@@ -279,9 +279,14 @@ Injector.prototype.getInstanceRecursion = function(name, nameHistory, scopeHisto
       continue;
     }
 
-    if(scopeHistory.length && scopeHistory[scopeHistory.length-1] < injectable.scope) {
-      throw new Error("Cannot inject " + name + " into " + nameHistory[nameHistory.length-1] +
-        ", " + name + " has a wider scope.");
+    previousScope = scopeHistory[scopeHistory.length-1];
+    if(scopeHistory.length && previousScope < injectable.scope) {
+      // we make a special allowance for PROTOTYPE scopes and SINGLETON scopes:  either scope can depend on the
+      // other even though SINGLETON is technically wider scope than PROTOTYPE.
+      if(!(previousScope === Scope.SINGLETON && injectable.scope === Scope.PROTOTYPE)) {
+        throw new Error("Cannot inject " + name + " into " + nameHistory[nameHistory.length - 1] +
+          ", " + name + " has a wider scope.");
+      }
     }
 
     if(additionalParameters.length) {

@@ -122,7 +122,7 @@ describe("injector", function() {
     expect.isSameReference(objectA, objectB, "singleton object should be returned for objectA and objectB");
   });
 
-  it("[SINGLETON, CONSTRUCTOR_FUNCTION] will not inject dependencies with wider scopes (any other than SINGLETON)", function() {
+  it("[SINGLETON, CONSTRUCTOR_FUNCTION] WILL inject dependencies with PROTOTYPE scope (even though SINGLETON is a wider scope)", function() {
     function MyPrototype() {
     }
 
@@ -140,9 +140,14 @@ describe("injector", function() {
 
     injector.addModuleGroup(module);
 
-    expect.throws(function() {
-      injector.getInstance("MySingleton");
-    }, /wider scope/, "Cannot bind a singleton to a wider-scoped dependency");
+    var singleton = injector.getInstance("MySingleton");
+    expect.isTrue(singleton instanceof MySingleton, "the injector made the singleton instance");
+    var anotherSingleton = injector.getInstance("MySingleton");
+    expect.isSameReference(singleton, anotherSingleton, "the injector should return the same reference twice");
+    expect.isTrue(singleton.x instanceof MyPrototype, "the injected property is the MyPrototype");
+
+    var anotherPrototype = injector.getInstance("MyPrototype");
+    expect.notSameReference(singleton.x, anotherPrototype, "the MyPrototype gives different instances");
   });
 
   it("[PROTOTYPE, CONSTRUCTOR_FUNCTION] will not inject dependencies from wider scopes than PROTOTYPE", function() {

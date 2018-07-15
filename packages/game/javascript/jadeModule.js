@@ -9,13 +9,13 @@ import provideTiledUtils from "./tiledUtils";
 import MapAssetLoader from "./assets/mapAssetLoader";
 import AnimatedSpriteAssetLoader from "./assets/animatedSpriteAssetLoader";
 import AssetManager from "./assetManager";
-import RenderLoop from "./renderLoop";
+import GameLoop from "./gameLoop";
 import Init from "./init";
 
 injector.newModuleGroup("jade", [
   "animationFrameScheduler", Rx.animationFrameScheduler,
   "animationFrameObservable", provideAnimationFrameObservable,
-  "renderLoop", RenderLoop,
+  "gameLoop", GameLoop,
   "init", Init,
   "tiledUtils", provideTiledUtils,
   "PIXI", PIXI,

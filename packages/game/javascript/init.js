@@ -13,9 +13,9 @@ import AnimatedSpriteAsset from "./assets/animatedSpriteAsset";
 class Init {
   /**
    * @param {AssetManager} assetManager
-   * @param {RenderLoop} renderLoop
+   * @param {GameLoop} gameLoop
    */
-  constructor(assetManager, renderLoop) {
+  constructor(assetManager, gameLoop) {
     var self = this;
 
     /**
@@ -43,8 +43,8 @@ class Init {
 
     $(document.body).append(this.app.view);
 
-    this.renderLoop = renderLoop;
-    renderLoop.start();
+    this.gameLoop = gameLoop;
+    gameLoop.start();
   }
 
   run() {
@@ -52,7 +52,7 @@ class Init {
 
       handmadeMap = new MapAsset("testmap", "tiled-example-ortho-outdoor"),
       fighterSprite = new AnimatedSpriteAsset("fighter", [
-        { frameset: "default", frameCount: 1 }
+        { frameset: "default", frameCount: 2 }
       ]);
 
     self.assetManager.loadAll([
@@ -96,4 +96,4 @@ class Init {
   }
 }
 
-export default injector.annotateConstructor(Init, injector.SINGLETON_SCOPE, "assetManager", "renderLoop");
+export default injector.annotateConstructor(Init, injector.SINGLETON_SCOPE, "assetManager", "gameLoop");
