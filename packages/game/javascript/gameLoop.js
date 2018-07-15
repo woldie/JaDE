@@ -62,6 +62,15 @@ function GameLoop(animationFrameObservable) {
   this.frameId = 0;
 
   /**
+   * Everything that is and is known.
+   *
+   * @name GameLoop#cosmos
+   * @type {(null|Object)}
+   * @package
+   */
+  this.cosmos = null;
+
+  /**
    * This value is intended to ensure that RequestAnimationFrame never consistently runs faster than 60Hz.
    * You should not use this value for any frame time delta calculations as the this value will not be updated
    * whenever the GameLoop is paused.
@@ -98,9 +107,23 @@ function GameLoop(animationFrameObservable) {
    * @type {(null|function(Number))}
    */
   this.preProcessCb = null;
+
+  /**
+   * When not null, prior to the start of the next frame, the cosmos will be replaced with this cosmos object and
+   * then this will be set to null.
+   *
+   * @name GameLoop#nextCosmos
+   * @type {(null|Object)}
+   * @private
+   */
+  this.nextCosmos = null;
 }
 
 GameLoop.MINIMUM_FRAME_TIME = Math.floor(1000 / 60);
+
+GameLoop.prototype.changeCosmos = function(newCosmos) {
+  this.nextCosmos = newCosmos;
+};
 
 /**
  * Process a frame of the GameLoop
@@ -122,6 +145,11 @@ GameLoop.prototype.start = function() {
       return;
     }
 
+    if(this.nextCosmos) {
+      this.cosmos = this.nextCosmos;
+      this.nextCosmos = null;
+    }
+
     // test to see if the game loop is paused, and if so, skip the frame
     if(this.isPaused) {
       console.log(`GameLoop is paused, time: ${frameTime}`);
@@ -131,7 +159,9 @@ GameLoop.prototype.start = function() {
     if(this.preProcessCb) {
       this.preProcessCb.call(this, frameTime);
     }
-    this.process(frameTime);
+    if(this.cosmos) {
+      this.process(frameTime);
+    }
   });
 };
 

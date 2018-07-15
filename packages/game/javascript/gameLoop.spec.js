@@ -13,9 +13,51 @@ describe("gameLoop", function() {
     mockScheduler = new RxTesting.TestScheduler();
   });
 
+  it("[start] will not increment the frameId only while the gameLoop is paused", function() {
+    // create a mock hot observable that simulates the request animation frame event firing
+    gameLoop = new GameLoop(mockScheduler.createHotObservable("----a---b----"));
+
+    gameLoop.isPaused = true;
+    gameLoop.start();
+
+    mockScheduler.flush();
+
+    expect.equals(0, gameLoop.frameId, "FrameID never advanced because the gameLoop was paused");
+  });
+
+  it("[setCosmos] process() will not be called unless a cosmos is set", function() {
+    // create a mock hot observable that simulates the request animation frame event firing
+    gameLoop = new GameLoop(mockScheduler.createHotObservable("----x---x----"));
+
+    // given a preProcessCb callback that changes the cosmos
+    gameLoop.preProcessCb = function() {
+      var newCosmos = {};
+
+      this.changeCosmos(newCosmos);
+
+      expect.isSameReference(this.nextCosmos, newCosmos, "next cosmos set");
+
+      // clear the preProcessCb so it doesn't get called again
+      this.preProcessCb = null;
+    };
+
+    // and fake process function that we can watch to see if it gets called
+    var fakeProcess = sinon.fake();
+    sinon.replace(gameLoop, "process", fakeProcess);
+
+    // when we start the GameLoop and flush the mock scheduler
+    gameLoop.start();
+    mockScheduler.flush();
+
+    // then the process will get called only once
+    expect.equals(1, fakeProcess.callCount, "process() only gets called once because a cosmos only existed at the start of the second frame");
+  });
+
   it("[start] will increment the frameId every time there is an animationFrame page flip", function() {
     // create a mock hot observable that simulates the request animation frame event firing
     gameLoop = new GameLoop(mockScheduler.createHotObservable("----a----b----"));
+
+    gameLoop.changeCosmos({});
 
     gameLoop.start();
 
@@ -35,23 +77,14 @@ describe("gameLoop", function() {
       "d": 0 + (GameLoop.MINIMUM_FRAME_TIME-1) + (GameLoop.MINIMUM_FRAME_TIME) + (GameLoop.MINIMUM_FRAME_TIME + 1)
     }));
 
-    gameLoop.start();
+    // and we set the nextCosmos before we start
+    gameLoop.changeCosmos({});
 
+    // when we start the GameLoop and flush the mock scheduler
+    gameLoop.start();
     mockScheduler.flush();
 
     expect.equals(3, gameLoop.frameId, "FrameID advanced only twice because frame b's delta was less than MINIMUM_FRAME_TIME");
-  });
-
-  it("[start] will not increment the frameId only while the gameLoop is paused", function() {
-    // create a mock hot observable that simulates the request animation frame event firing
-    gameLoop = new GameLoop(mockScheduler.createHotObservable("----a---b----"));
-
-    gameLoop.isPaused = true;
-    gameLoop.start();
-
-    mockScheduler.flush();
-
-    expect.equals(0, gameLoop.frameId, "FrameID never advanced because the gameLoop was paused");
   });
 
   it("[start] will call preProcessCb if it is non-null before process whenever the game loop is not paused", function() {
@@ -68,6 +101,9 @@ describe("gameLoop", function() {
     // and fake process function that we can watch
     var fakeProcess = sinon.fake();
     sinon.replace(gameLoop, "process", fakeProcess);
+
+    // and we set the nextCosmos before we start
+    gameLoop.changeCosmos({});
 
     // when we start the GameLoop and flush the mock scheduler
     gameLoop.start();
