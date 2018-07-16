@@ -1,6 +1,7 @@
 "use strict";
 
 import GameLoop from "./gameLoop";
+import GameEventHandler from "./gameEventHandler";
 import * as RxTesting from "rxjs/testing";
 
 describe("gameLoop", function() {
@@ -25,32 +26,15 @@ describe("gameLoop", function() {
     expect.equals(0, gameLoop.frameId, "FrameID never advanced because the gameLoop was paused");
   });
 
-  it("[setCosmos] process() will not be called unless a cosmos is set", function() {
+  it("[start] will fail if called more than once", function() {
     // create a mock hot observable that simulates the request animation frame event firing
-    gameLoop = new GameLoop(mockScheduler.createHotObservable("----x---x----"));
+    gameLoop = new GameLoop(mockScheduler.createHotObservable("----a---b----"));
 
-    // given a preProcessCb callback that changes the cosmos
-    gameLoop.preProcessCb = function() {
-      var newCosmos = {};
-
-      this.changeCosmos(newCosmos);
-
-      expect.isSameReference(this.nextCosmos, newCosmos, "next cosmos set");
-
-      // clear the preProcessCb so it doesn't get called again
-      this.preProcessCb = null;
-    };
-
-    // and fake process function that we can watch to see if it gets called
-    var fakeProcess = sinon.fake();
-    sinon.replace(gameLoop, "process", fakeProcess);
-
-    // when we start the GameLoop and flush the mock scheduler
     gameLoop.start();
-    mockScheduler.flush();
 
-    // then the process will get called only once
-    expect.equals(1, fakeProcess.callCount, "process() only gets called once because a cosmos only existed at the start of the second frame");
+    expect.throws(function() {
+      gameLoop.start();
+    }, /Cannot start the GameLoop more than once/, "Cannot call start() more than once");
   });
 
   it("[start] will increment the frameId every time there is an animationFrame page flip", function() {
@@ -110,6 +94,82 @@ describe("gameLoop", function() {
     mockScheduler.flush();
 
     expect.equals(1, preProcessCalls, "preProcessCb only gets called once since it paused the second time");
-    expect.equals(1, fakeProcess.callCount, "process() got called even though isPaused transitioned to true in the first iteration");
+    expect.equals(2, fakeProcess.callCount, "process() got called even though isPaused transitioned to true in the first iteration");
+    expect.equals("onStart", fakeProcess.getCall(0).lastArg, "onStart was the first call to process");
+    expect.equals("onFrame", fakeProcess.getCall(1).lastArg, "onFrame was the second (and last) call to process");
+  });
+
+  class MyEventHandler extends GameEventHandler {
+    constructor() {
+      super();
+
+      this.onStartCalls = 0;
+      this.onFrameCalls = 0;
+      this.onStopCalls = 0;
+    }
+
+    onStart(frameTime, cosmos) {
+      this.onStartCalls++;
+    }
+
+    onFrame(frameTime, cosmos) {
+      this.onFrameCalls++;
+    }
+
+    onStop(lastFrameTime, cosmos) {
+      this.onStopCalls++;
+    }
+  }
+
+  it("[start] will allow you to pass event handlers that get called on major lifecycle events", function() {
+    // given a mock hot observable that simulates the request animation frame event firing
+    gameLoop = new GameLoop(mockScheduler.createHotObservable("-x-x-x-x-x-x-"));
+
+    // and we set the nextCosmos before we start
+    gameLoop.changeCosmos({});
+
+    // and a postProcessCb callback that stops the GameLoop after onFrame has been called 3 times
+    gameLoop.postProcessCb = function() {
+      if(eventHandler.onFrameCalls === 3) {
+        gameLoop.stop();
+      }
+    };
+
+    // when we start the GameLoop with event handlers and flush the mock scheduler
+    var eventHandler = new MyEventHandler();
+    gameLoop.start([ eventHandler ]);
+    mockScheduler.flush();
+
+    // then a lot of stuff happens in the event handlers and GameLoop state
+    expect.equals(1, eventHandler.onStartCalls, "onStart called once");
+    expect.equals(3, eventHandler.onFrameCalls, "onFrame called three times");
+
+    // then things are teardown gracefully as expected in GameLoop
+    expect.equals(1, eventHandler.onStopCalls, "onStop called once");
+  });
+
+  it("[setCosmos] process() will not call event handlers unless a cosmos is set", function() {
+    // create a mock hot observable that simulates the request animation frame event firing
+    gameLoop = new GameLoop(mockScheduler.createHotObservable("-x-x-x-x-x-x-"));
+
+    // given that no cosmos is ever set
+    gameLoop.changeCosmos(null);
+
+    // and a postProcessCb callback that stops the GameLoop on the second frame
+    gameLoop.postProcessCb = function() {
+      if(gameLoop.frameId === 1) {
+        gameLoop.stop();
+      }
+    };
+
+    // when we start the GameLoop and flush the mock scheduler
+    var eventHandler = new MyEventHandler();
+    gameLoop.start([ eventHandler ]);
+    mockScheduler.flush();
+
+    // then the event handler will not be called for any of the lifecycle events
+    expect.equals(0, eventHandler.onStartCalls, "onStart not called");
+    expect.equals(0, eventHandler.onFrameCalls, "onFrame not called");
+    expect.equals(0, eventHandler.onStopCalls, "onStop not called");
   });
 });

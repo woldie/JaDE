@@ -14,6 +14,7 @@
 "use strict";
 
 import { injector } from "jsuice";
+import { takeWhile } from "rxjs/operators";
 
 /**
  * <h1>The Cosmos</h1>
@@ -47,6 +48,8 @@ import { injector } from "jsuice";
  * graphics animations or NPC/Monster actions) to achieve this "time stop" effect while the player contemplates their
  * next move, but that is not the same as the pause flag discussed above.  The pause flag stops *all* processing in
  * the game loop and prevents the frameId from advancing and is primarily useful during game development.
+ *
+ * @param {Rx.Observable} animationFrameObservable
  */
 function GameLoop(animationFrameObservable) {
   /**
@@ -85,6 +88,11 @@ function GameLoop(animationFrameObservable) {
   this.lastFrameTime = parseInt("NaN");
 
   /**
+   * true after start() is called and before stop() is called
+   */
+  this.isStarted = false;
+
+  /**
    * Is the game loop disabled?
    *
    * <p>This flag is intended for development purposes, and goes beyond merely "pausing" the
@@ -101,68 +109,123 @@ function GameLoop(animationFrameObservable) {
   this.isPaused = false;
 
   /**
-   * When not null, this function is called just prior to calling process().  Useful for debugging.  The 'this'
-   * is set to the calling GameLoop object when called.
+   * When not null, this function is called just prior to calling process() for the onFrame event.  Useful for
+   * debugging and testing while the game loop is running.   The 'this' is set to the calling GameLoop object when
+   * called.
    *
    * @type {(null|function(Number))}
    */
   this.preProcessCb = null;
 
   /**
-   * When not null, prior to the start of the next frame, the cosmos will be replaced with this cosmos object and
-   * then this will be set to null.
+   * When not null, this function is called just after to calling process() for the onFrame event.  Useful for
+   * debugging and testing while the game loop is running.  The 'this' is set to the calling GameLoop object when
+   * called.
+   *
+   * @type {(null|function(Number))}
+   */
+  this.postProcessCb = null;
+
+  /**
+   * When non-empty nextCosmos contains a non-null Object, prior to the start of the next frame, the cosmos will be
+   * replaced with this cosmos object and then the array will be emptied.
    *
    * @name GameLoop#nextCosmos
-   * @type {(null|Object)}
+   * @type {Array.<(null|Object)>}
    * @private
    */
-  this.nextCosmos = null;
+  this.nextCosmos = [];
 }
 
 GameLoop.MINIMUM_FRAME_TIME = Math.floor(1000 / 60);
 
 GameLoop.prototype.changeCosmos = function(newCosmos) {
-  this.nextCosmos = newCosmos;
+  this.nextCosmos = [ newCosmos ];
 };
 
 /**
- * Process a frame of the GameLoop
+ * Process events.  If cosmos is not null, call each event handler.
  *
- * @name GameLoop#process
  * @param {Number} frameTime
- * @package
+ * @param {Array.<GameEventHandler>} eventHandlers
+ * @param {String} whichEvent name of event handler function in eventHandlers to call
  */
-GameLoop.prototype.process = function(frameTime) {
-  this.lastFrameTime = frameTime;
-  this.frameId++;
+GameLoop.prototype.process = function(frameTime, eventHandlers, whichEvent) {
+  if(this.cosmos) {
+    eventHandlers.forEach((handler) => {
+      try {
+        handler[whichEvent].call(handler, frameTime, this.cosmos);
+      }
+      catch(e) {
+        console.log(e);
+      }
+    });
+  }
 };
 
-GameLoop.prototype.start = function() {
-  this.animationFrameObservable.subscribe((frameTime) => {
-    var frameTimeDelta = frameTime - this.lastFrameTime;
-    if(frameTimeDelta < GameLoop.MINIMUM_FRAME_TIME) {
-      console.log(`Minimum frame delta is ${GameLoop.MINIMUM_FRAME_TIME} msec, skipping ${frameTimeDelta} msec frame`);
-      return;
-    }
+GameLoop.prototype.start = function(eventHandlers) {
+  if(this.isStarted) {
+    throw new Error("Cannot start the GameLoop more than once, use stop() to shutdown before start()'ing it again");
+  }
 
-    if(this.nextCosmos) {
-      this.cosmos = this.nextCosmos;
-      this.nextCosmos = null;
-    }
+  this.isStarted = true;
 
-    // test to see if the game loop is paused, and if so, skip the frame
-    if(this.isPaused) {
-      console.log(`GameLoop is paused, time: ${frameTime}`);
-      return;
-    }
+  eventHandlers = eventHandlers || [];
+  var atStart = true;
 
-    if(this.preProcessCb) {
-      this.preProcessCb.call(this, frameTime);
-    }
-    if(this.cosmos) {
-      this.process(frameTime);
-    }
-  });
+  var animationFrameSubscriptionHandle = this.animationFrameObservable
+    .pipe(
+      // the following subscription runs, and game frames are generated, while isStarted is true
+      takeWhile((value, index) => this.isStarted)
+    )
+    .subscribe((frameTime) => {
+      var frameTimeDelta = frameTime - this.lastFrameTime;
+      if(frameTimeDelta < GameLoop.MINIMUM_FRAME_TIME) {
+        console.log(`Minimum frame delta is ${GameLoop.MINIMUM_FRAME_TIME} msec, skipping ${frameTimeDelta} msec frame`);
+        return;
+      }
+
+      if(this.nextCosmos.length) {
+        this.cosmos = this.nextCosmos[0];
+        this.nextCosmos = [];
+      }
+
+      if(atStart) {
+        this.process(frameTime, eventHandlers, "onStart");
+        atStart = false;
+      }
+
+      // test to see if the game loop is paused, and if so, skip the frame
+      if(this.isPaused) {
+        console.log(`GameLoop is paused, time: ${frameTime}`);
+        return;
+      }
+
+      // advance the frame
+      this.lastFrameTime = frameTime;
+      this.frameId++;
+
+      // before frame processing
+      if(this.preProcessCb) {
+        this.preProcessCb(frameTime);
+      }
+
+      // frame processing
+      this.process(frameTime, eventHandlers, "onFrame");
+
+      // after frame processing
+      if(this.postProcessCb) {
+        this.postProcessCb(frameTime);
+      }
+    }, (err) => console.log(err),
+      () => {
+        // callback that gets called for when the subscription runs out
+        animationFrameSubscriptionHandle.add(() => this.process(this.lastFrameTime, eventHandlers, "onStop"));
+    });
+};
+
+GameLoop.prototype.stop = function() {
+  this.isStarted = false;
 };
 
 export default injector.annotateConstructor(GameLoop, injector.SINGLETON_SCOPE, "animationFrameObservable");
