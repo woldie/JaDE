@@ -6,19 +6,13 @@ import Asset from "./asset"
  * Animated Sprite asset - bitmap that gets sliced and diced into animation frames and returned as a
  * PIXI.extras.AnimatedSprite.
  *
- * @param {String} bitmapName filename (sans .png extension) of the sprite PNG file to load
+ * @param {String} name filename (sans .png extension) of the sprite PNG file to load, serves as identifier as well
  * @param {Array.<{frameset: String, frameCount: Number}>} frameDescriptions ordered set of frameset names and number of frames in set
  * @constructor
  * @extends {Asset}
  */
-function AnimatedSpriteAsset(bitmapName, frameDescriptions) {
-  Asset.call(this);
-
-  /**
-   * @name AnimatedSpriteAsset#bitmapName
-   * @type {String}
-   */
-  this.bitmapName = bitmapName;
+function AnimatedSpriteAsset(name, frameDescriptions) {
+  Asset.call(this, name);
 
   /**
    * @name AnimatedSpriteAsset#frameDescriptions

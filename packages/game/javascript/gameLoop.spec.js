@@ -1,7 +1,7 @@
 "use strict";
 
 import GameLoop from "./gameLoop";
-import GameEventHandler from "./gameEventHandler";
+import GameEventHandler from "./eventHandlers/gameEventHandler";
 import * as RxTesting from "rxjs/testing";
 
 describe("gameLoop", function() {

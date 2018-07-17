@@ -3,8 +3,16 @@
 /**
  * @abstract
  * @constructor
+ * @param {String} name asset's identifier
  */
-function Asset() {
+function Asset(name) {
+  /**
+   * @name MapAsset#name
+   * @type {String}
+   */
+  this.name = name;
 }
+
+
 
 export default Asset;

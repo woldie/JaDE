@@ -67,7 +67,7 @@ MapAssetLoader.prototype.getTilesetPng = function(mapAsset) {
  * @returns loaded map json
  */
 MapAssetLoader.prototype.getMapJson = function(mapAsset) {
-  return require(`../../maps/${mapAsset.mapName}.json`);
+  return require(`../../maps/${mapAsset.name}.json`);
 };
 
 export default injector.annotateConstructor(MapAssetLoader, injector.SINGLETON_SCOPE, "PIXI", "tiledUtils");
