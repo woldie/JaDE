@@ -5,13 +5,14 @@
   ],
   "command": {
     "run": {
-      "parallel": true
+      "parallel": true,
+      "stream": true
     },
     "bootstrap": {
       "stream": true
     }
   },
-  "loglevel": "silent",
+  "loglevel": "info",
   "progress": false,
   "version": "independent"
 }
