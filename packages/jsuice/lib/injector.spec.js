@@ -122,6 +122,44 @@ describe("injector", function() {
     expect.isSameReference(objectA, objectB, "singleton object should be returned for objectA and objectB");
   });
 
+  it("[SINGLETON, PROVIDER_FUNCTION] will construct dependencies once and only once in complex object graphs", function() {
+    var callCount = 0;
+    function mySingletonProvider() {
+      callCount++;
+
+      return callCount;
+    }
+
+    injector.annotateProvider(mySingletonProvider, injector.SINGLETON_SCOPE);
+
+    module.register("MySingleton", mySingletonProvider);
+
+    function MyInnerObject(mySingleton) {
+      this.mySingleton = mySingleton;
+    }
+
+    injector.annotateConstructor(MyInnerObject, injector.PROTOTYPE_SCOPE, "MySingleton");
+
+    module.register("MyInnerObject", MyInnerObject);
+
+
+    function MyOuterObject(mySingleton, myInnerObject) {
+      this.mySingleton = mySingleton;
+      this.myInnerObject = myInnerObject;
+    }
+
+    injector.annotateConstructor(MyOuterObject, injector.PROTOTYPE_SCOPE, "MySingleton", "MyInnerObject");
+
+    module.register("MyOuterObject", MyOuterObject);
+
+    injector.addModuleGroup(module);
+
+    var myOuterObject = injector.getInstance("MyOuterObject");
+
+    expect.equals(1, myOuterObject.mySingleton, "the singleton is referred to at two levels in the complex, but was only instantiated once");
+    expect.equals(1, myOuterObject.myInnerObject.mySingleton, "the singleton is referred to at two levels in the complex, but was only instantiated once");
+  });
+
   it("[SINGLETON, CONSTRUCTOR_FUNCTION] WILL inject dependencies with PROTOTYPE scope (even though SINGLETON is a wider scope)", function() {
     function MyPrototype() {
     }
@@ -454,6 +492,22 @@ describe("injector", function() {
       expect.throws(function() {
         injector.annotateConstructor(MyConstructor, flags);
       }, /exactly one scope flag/i, "Expect annotateConstructor to throw when flags does not contain exactly one scope");
+    });
+  });
+
+  it("[annotateConstructor] will fail if scope is not a positive integer", function() {
+    [ new Number("NaN"),    // NaN
+      1 / 0,                // Infinity
+      injector.PROTOTYPE,   // typo, nonexistant property would be undefined
+      "APPLICATION_SCOPE",  // string, should be an integer
+      -1                    // negative number
+    ].forEach(function(flags) {
+      function MyConstructor() {
+      }
+
+      expect.throws(function() {
+        injector.annotateConstructor(MyConstructor, flags);
+      }, /must be a positive integer/i, "Expect annotateConstructor to throw when flags are not a positive integer");
     });
   });
 

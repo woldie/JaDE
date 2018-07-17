@@ -4,7 +4,9 @@ var Scope = require("./scope"),
   InjectableType = require("./injectableType"),
   InjectorModule = require("./moduleGroup"),
 
-  isString = require("lodash.isstring");
+  isString = require("lodash.isstring"),
+  isInteger = require("lodash.isinteger"),
+  isFunction = require("lodash.isfunction");
 
 /**
  * For internal use only.  injector.js exports a global singleton that should be invoked directly.
@@ -116,7 +118,7 @@ Injector.prototype.EAGER_FLAG = 128;
  * @returns {Function} annotated constructor function that is suitable to be added as a module to a module group
  * @see {@link Injector#newModuleGroup}
  */
- Injector.prototype.annotateConstructor = function(ctor, flags, injectedParams) {
+Injector.prototype.annotateConstructor = function(ctor, flags, injectedParams) {
   var argList = Array.from(arguments),
     metaObj = {
       injectedParams: (argList.length > 2) ? argList.slice(2) : [],
@@ -130,7 +132,18 @@ Injector.prototype.EAGER_FLAG = 128;
     }
   }
 
-  flags = (typeof flags === "undefined") ? Injector.prototype.PROTOTYPE_SCOPE : flags;
+  if(!argList.length || !isFunction(ctor)) {
+    throw new Error("annotateConstructor: the first argument must be a constructor function");
+  }
+
+  // default if flags is not specified
+  if(argList.length === 1) {
+    flags = Injector.prototype.PROTOTYPE_SCOPE;
+  }
+
+  if(!isInteger(flags) || flags < 0) {
+    throw new Error("annotateConstructor: flags must be a positive integer");
+  }
 
   switch(flags & (Injector.prototype.SINGLETON_SCOPE | Injector.prototype.APPLICATION_SCOPE |
                   Injector.prototype.PROTOTYPE_SCOPE)) {
@@ -191,7 +204,7 @@ Injector.prototype.EAGER_FLAG = 128;
  * of this function must have the same number as injectedParams.  If the PROTOTYPE_SCOPE flag is passed in flags,
  * then provider may take additional parameters that the end-user can use to supply additional values at time of
  * instantiation
- * @param {Number=} flags integer containing flags (as set bits) that describe what the scope and configuration flags
+ * @param {!Number} flags integer containing flags (as set bits) that describe what the scope and configuration flags
  * should be for the provider function
  * @param {...String=} injectedParams injected parameters that need to be passed to the provider function at time of
  * instantiation
@@ -206,7 +219,19 @@ Injector.prototype.annotateProvider = function(provider, flags, injectedParams) 
       eager: false
     };
 
-  flags = (typeof flags === "undefined") ? Injector.prototype.PROTOTYPE_SCOPE : flags;
+
+  if(!argList.length || !isFunction(provider)) {
+    throw new Error("annotateProvider: the first argument must be a constructor function");
+  }
+
+  // default if flags is not specified
+  if(argList.length === 1) {
+    flags = Injector.prototype.PROTOTYPE_SCOPE;
+  }
+
+  if(!isInteger(flags) || flags < 0) {
+    throw new Error("annotateProvider: flags must be a positive integer");
+  }
 
   switch(flags & (Injector.prototype.SINGLETON_SCOPE | Injector.prototype.APPLICATION_SCOPE |
       Injector.prototype.PROTOTYPE_SCOPE)) {

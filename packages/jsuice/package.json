@@ -20,6 +20,8 @@
     "sinon-test": "^2.2.0"
   },
   "dependencies": {
-    "lodash.isstring": "^4.0.1"
+    "lodash.isstring": "^4.0.1",
+    "lodash.isinteger": "^4.0.1",
+    "lodash.isfunction": "^3.0.9"
   }
 }
