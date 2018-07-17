@@ -2,7 +2,6 @@
 
 import { injector } from "jsuice";
 import * as PIXI from "pixi.js";
-import $ from "jquery";
 import MapAsset from "./assets/mapAsset";
 import AnimatedSpriteAsset from "./assets/animatedSpriteAsset";
 
@@ -14,8 +13,10 @@ class Init {
   /**
    * @param {AssetManager} assetManager
    * @param {GameLoop} gameLoop
+   * @param {PIXI.Application} pixiApp
+   * @param {Display} display
    */
-  constructor(assetManager, gameLoop) {
+  constructor(assetManager, gameLoop, pixiApp, display) {
     var self = this;
 
     /**
@@ -25,24 +26,21 @@ class Init {
     self.assetManager = assetManager;
 
     /**
-     * @name Init#app
+     * @name Init#pixiApp
      * @type {PIXI.Application}
      */
-    self.app = new PIXI.Application({
-      width: 256,         // default: 800
-      height: 256,        // default: 600
-      antialias: false,   // default: false
-      transparent: false, // default: false
-      resolution: 1,      // default: 1
-      forceCanvas: PIXI.utils.isWebGLSupported() ? "WebGL" : "canvas"
-    });
+    self.pixiApp = pixiApp;
 
-    self.app.renderer.autoResize = true;
-    self.app.renderer.resize(512, 512);
-    self.app.renderer.backgroundColor = 0x061639;
+    /**
+     * @name Init#display
+     * @type {Display}
+     */
+    self.display = display;
 
-    $(document.body).append(this.app.view);
-
+    /**
+     *
+     * @type {GameLoop}
+     */
     this.gameLoop = gameLoop;
     gameLoop.start();
   }
@@ -60,13 +58,16 @@ class Init {
       fighterSprite
 
       // TODO:  create an animated sprite generator/loader class that will serve as an object sprite we will replace in the handmadeMap
-    ]).then(function(assets) {
+    ]).then((assets) => {
       // this is where game-specific world randomization and trigger prepping occurs
 
       // when the game starts, one map is selected for
-      self.app.stage.addChild(handmadeMap.areaMap);
-      self.app.stage.addChild(fighterSprite.sprite);
-    }, function() {
+      //self.pixiApp.stage.addChild(handmadeMap.areaMap);
+      this.display.changeCurrentArea(handmadeMap);
+
+      this.pixiApp.stage.addChild(fighterSprite.sprite);
+    }, (err) => {
+      console.log(err);
       alert("failed to load?!");
     });
 
@@ -96,4 +97,5 @@ class Init {
   }
 }
 
-export default injector.annotateConstructor(Init, injector.SINGLETON_SCOPE, "assetManager", "gameLoop");
+export default injector.annotateConstructor(Init, injector.SINGLETON_SCOPE,
+  "assetManager", "gameLoop", "pixiApp", "display");
