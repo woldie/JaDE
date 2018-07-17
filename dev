@@ -1,4 +1,7 @@
 #!/bin/sh
 
+rm -f ./dev.out
+touch ./dev.out
+tail -f ./dev.out &
 (cd packages/jsuice; npm run dev) &
-(cd packages/game; npm run dev)
+(cd packages/game; npm run dev) > ./dev.out

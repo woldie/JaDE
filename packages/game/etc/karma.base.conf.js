@@ -49,8 +49,8 @@ module.exports = function(config) {
       require("karma-sinon"),
       require("karma-quixote"),
       require("karma-chrome-launcher"),
-      require("karma-firefox-launcher"),
-      require("karma-super-dots-reporter")
+      require("karma-firefox-launcher")
+      //require("karma-super-dots-reporter")
     ],
 
     // test results reporter to use
@@ -63,20 +63,20 @@ module.exports = function(config) {
         success: ".",
         info: "i",
         warning: "?",
-        failure: "X"
+        error: "X"
       },
-      output: "full",
+      output: "minimal",
       showDiff: true,
       colors: false
     },
 
-    superDotsReporter: {
-      icon: {
-        success: ".",
-        failure: "X",
-        ignore: "i"
-      }
-    },
+    //superDotsReporter: {
+    //  icon: {
+    //    success: ".",
+    //    failure: "X",
+    //    ignore: "i"
+    //  }
+    //},
 
     client: {
       mocha: {
