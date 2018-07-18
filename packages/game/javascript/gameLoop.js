@@ -14,7 +14,7 @@
 "use strict";
 
 import { injector } from "jsuice";
-import { takeWhile } from "rxjs/operators";
+import { takeWhile, debounceTime } from "rxjs/operators";
 
 /**
  * <h1>The Cosmos</h1>
@@ -137,7 +137,7 @@ function GameLoop(animationFrameObservable) {
   this.nextCosmos = [];
 }
 
-GameLoop.MINIMUM_FRAME_TIME = Math.floor(1000 / 60);
+GameLoop.MINIMUM_FRAME_TIME = Math.floor(1000 / 60) - 1;
 
 GameLoop.prototype.changeCosmos = function(newCosmos) {
   this.nextCosmos = [ newCosmos ];
@@ -147,14 +147,15 @@ GameLoop.prototype.changeCosmos = function(newCosmos) {
  * Process events.  If cosmos is not null, call each event handler.
  *
  * @param {Number} frameTime
+ * @param {Number} frameTimeDelta
  * @param {Array.<GameEventHandler>} eventHandlers
  * @param {String} whichEvent name of event handler function in eventHandlers to call
  */
-GameLoop.prototype.process = function(frameTime, eventHandlers, whichEvent) {
+GameLoop.prototype.process = function(frameTime, frameTimeDelta, eventHandlers, whichEvent) {
   if(this.cosmos) {
     eventHandlers.forEach((handler) => {
       try {
-        handler[whichEvent].call(handler, frameTime, this.cosmos);
+        handler[whichEvent].call(handler, frameTime, frameTimeDelta, this.frameId, this.cosmos);
       }
       catch(e) {
         console.log(e);
@@ -176,12 +177,13 @@ GameLoop.prototype.start = function(eventHandlers) {
   var animationFrameSubscriptionHandle = this.animationFrameObservable
     .pipe(
       // the following subscription runs, and game frames are generated, while isStarted is true
-      takeWhile((value, index) => this.isStarted)
+      takeWhile((value, index) => this.isStarted),
+      debounceTime(isNaN(this.lastFrameTime) ? 0 : GameLoop.MINIMUM_FRAME_TIME)
     )
     .subscribe((frameTime) => {
-      var frameTimeDelta = frameTime - this.lastFrameTime;
-      if(frameTimeDelta < GameLoop.MINIMUM_FRAME_TIME) {
-        console.log(`Minimum frame delta is ${GameLoop.MINIMUM_FRAME_TIME} msec, skipping ${frameTimeDelta} msec frame`);
+      var isFirstFrame = isNaN(this.lastFrameTime);
+      var frameTimeDelta = isFirstFrame ? 0 : (frameTime - this.lastFrameTime);
+      if(!isFirstFrame && frameTimeDelta < GameLoop.MINIMUM_FRAME_TIME) {
         return;
       }
 
@@ -191,13 +193,13 @@ GameLoop.prototype.start = function(eventHandlers) {
       }
 
       if(atStart) {
-        this.process(frameTime, eventHandlers, "onStart");
+        this.process(frameTime, 0, eventHandlers, "onStart");
         atStart = false;
       }
 
       // test to see if the game loop is paused, and if so, skip the frame
       if(this.isPaused) {
-        console.log(`GameLoop is paused, time: ${frameTime}`);
+        // console.log(`GameLoop is paused, time: ${frameTime}`);
         return;
       }
 
@@ -211,7 +213,7 @@ GameLoop.prototype.start = function(eventHandlers) {
       }
 
       // frame processing
-      this.process(frameTime, eventHandlers, "onFrame");
+      this.process(frameTime, frameTimeDelta, eventHandlers, "onFrame");
 
       // after frame processing
       if(this.postProcessCb) {
@@ -220,7 +222,8 @@ GameLoop.prototype.start = function(eventHandlers) {
     }, (err) => console.log(err),
       () => {
         // callback that gets called for when the subscription runs out
-        animationFrameSubscriptionHandle.add(() => this.process(this.lastFrameTime, eventHandlers, "onStop"));
+        animationFrameSubscriptionHandle.add(() =>
+          this.process(this.lastFrameTime, 0, eventHandlers, "onStop"));
     });
 };
 

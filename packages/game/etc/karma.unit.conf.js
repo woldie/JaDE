@@ -16,7 +16,7 @@
 // jscs: disable
 /* jshint -W079 */
 var path = require("path"),
-  _ = require("lodash");
+  extend = require("lodash.assignin");
 
 module.exports = function(config) {
   var baseKarmaConfig = require("./karma.base.conf.js")(config),
@@ -38,5 +38,5 @@ module.exports = function(config) {
   configOverrides.preprocessors["etc/karma.unit.files.js"] = ["webpack"];
   configOverrides.preprocessors["etc/testingMain.js"] = ["webpack"];
 
-  return _.extend(baseKarmaConfig, configOverrides);
+  return extend(baseKarmaConfig, configOverrides);
 };

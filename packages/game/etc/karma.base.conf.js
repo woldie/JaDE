@@ -17,7 +17,7 @@
 /* jshint -W079 */
 var path = require("path"),
   fs = require("fs"),
-  _ = require("lodash"),
+  extend = require("lodash.assignin"),
   webpackConfig = require("./webpackConfig");
 
 function makeTestingWebpackConfig(outputModuleName) {
@@ -143,5 +143,5 @@ module.exports = function(config) {
   // webpack preprocessing should occur on files loaded by extensions to this config
   // commonSettings.preprocessors[path.resolve(__dirname, "karma.base.files.js")] = ["webpack"];
 
-  return _.extend(config, commonSettings);
+  return extend(config, commonSettings);
 };
