@@ -30,6 +30,12 @@ function MapAsset(name, tilesetName) {
    * @type {(null|PIXI.Texture)}
    */
   this.tileset = null;
+
+  /**
+   * @name MapAsset#tilesetDescriptor
+   * @type {(null|Object)}
+   */
+  this.tilesetDescriptor = null;
 }
 
 MapAsset.prototype = Object.create(Asset.prototype);

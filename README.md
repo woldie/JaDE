@@ -111,9 +111,9 @@ And all of the compiled files you need to play your game will be saved to the `d
  
 * In Tiled, select File | New ...
   * In the New dialog, select `Orthogonal`, `CSV`, `Right Down`, and then set your map height and width to the desired
-    size and the pixel height/width of the tiles in the map to 16x16.
+    size and the pixel height/width of the tiles in the map to 32x32.
 * In the Tilesets pane, create a new tileset by loading a .png containing your tile graphics.  Your .png should be 384 
-  pixels wide (24 tiles in width) and some multiple of 16 pixels high.
+  pixels wide (12 tiles in width) and some multiple of 16 pixels high.
   * By convention, save your tileset .png files and any other javascript or JSON related to each tileset to the 
     tilesets/ folder.
 * When saving your handmade area maps from Tiled, use File | Save ...

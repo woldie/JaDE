@@ -50,6 +50,7 @@ MapAssetLoader.prototype.prePixiLoad = function(mapAsset) {
 MapAssetLoader.prototype.postPixiLoad = function(mapAsset, allPixiResources) {
   mapAsset.tileset = allPixiResources[mapAsset.tilesetName];
   mapAsset.areaMap = this.tiledUtils.makeTiledWorld(this.getMapJson(mapAsset), mapAsset.tilesetName);
+  mapAsset.tilesetDescriptor = this.getTilesetDescriptor(mapAsset);
 };
 
 /**
@@ -59,6 +60,15 @@ MapAssetLoader.prototype.postPixiLoad = function(mapAsset, allPixiResources) {
  */
 MapAssetLoader.prototype.getTilesetPng = function(mapAsset) {
   return require(`../../tilesets/${mapAsset.tilesetName}.png`);
+};
+
+/**
+ * @package
+ * @param {MapAsset} mapAsset
+ * @returns loaded tileset descriptor
+ */
+MapAssetLoader.prototype.getTilesetDescriptor = function(mapAsset) {
+  return require(`../../tilesets/${mapAsset.tilesetName}.js`)
 };
 
 /**

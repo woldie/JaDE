@@ -36,8 +36,11 @@ describe("AssetManager", function() {
 
     // and a fake image URL returned by a fake getTilesetPng function
     var expectedUrl = "PNG BASE64",
-      fakeGetImage = sinon.fake.returns(expectedUrl);
+      fakeGetImage = sinon.fake.returns(expectedUrl),
+      fakeDescriptor = sinon.fake.returns({ "fake": "json" });
+
     sinon.replace(MapAssetLoader.prototype, "getTilesetPng", fakeGetImage);
+    sinon.replace(MapAssetLoader.prototype, "getTilesetDescriptor", fakeDescriptor);
 
     // and a fake map JSON
     var mapJson = { "imafake": true },
