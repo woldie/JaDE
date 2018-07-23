@@ -10,5 +10,8 @@ var tileDescriptors = [
     {id : 5, name : "bush", walkable : false, seethrough : true},
     {id : 6, name : "mud", walkable : true, seethrough : true},
     {id : 7, name : "sand", walkable : true, seethrough : true},
+    {id : 8, name : "Wood_Floor", walkable : true, seethrough : true},
+    {id : 9, name : "Boulder", walkable : false, seethrough : true},
+
 ];
 export default tileDescriptors;
