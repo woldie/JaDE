@@ -49,7 +49,7 @@ class Init {
   run() {
     var self = this,
 
-      handmadeMap = new MapAsset("testmap", "tiled-example-ortho-outdoor"),
+      handmadeMap = new MapAsset("HomeTown", "Scavengers"),
       fighterSprite = new AnimatedSpriteAsset("fighter", [
         { frameset: "default", frameCount: 2 }
       ]);
@@ -84,7 +84,7 @@ class Init {
       // set an area in the cosmos to transition to as our starting point if we don't already have one
       if(!cosmos.currentArea) {
         cosmos.commands.changeArea = {
-          name: "testmap"
+          name: "HomeTown"
         };
       }
 

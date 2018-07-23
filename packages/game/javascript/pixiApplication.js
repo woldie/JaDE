@@ -9,8 +9,8 @@ import $ from "jquery";
 function providePixiApplication(PIXI) {
   console.log("Provide Pixi application");
   var pixiApp = new PIXI.Application({
-    width: 256,         // default: 800
-    height: 256,        // default: 600
+    width: 5000,         // default: 800
+    height: 5000,        // default: 600
     antialias: false,   // default: false
     transparent: false, // default: false
     resolution: 1,      // default: 1
@@ -18,7 +18,7 @@ function providePixiApplication(PIXI) {
   });
 
   pixiApp.renderer.autoResize = true;
-  pixiApp.renderer.resize(512, 512);
+  pixiApp.renderer.resize(5000, 5000);
   pixiApp.renderer.backgroundColor = 0x061639;
 
   $(document.body).append(pixiApp.view);
