@@ -2,6 +2,8 @@
 
 import { injector } from "jsuice";
 
+import GameUtilities from "pixi-game-utilities";
+
 class Display {
   /**
    * @param {PIXI.Application} pixiApp
@@ -18,6 +20,12 @@ class Display {
      * @type {(MapAsset|null)}
      */
     this.currentArea = null;
+
+    /**
+     * @name Display#gu
+     * @type {GameUtilities}
+     */
+    this.gu = new GameUtilities();
   }
 
   /**
@@ -34,6 +42,22 @@ class Display {
 
     this.currentArea = mapAsset;
     this.addCurrentAreaToPixiApp();
+  }
+
+  /**
+   * @typedef {{follow: function(PIXI.Sprite), centerOver: function(PIXI.Sprite)}} Camera
+   */
+
+  /**
+   * <p>Make a camera that can dynamically offset a tiled map on the display.
+   *
+   * @param {PIXI.Container} tiledMap
+   * @param {number} width
+   * @param {number} height
+   * @returns {Camera}
+   */
+  makeCamera(tiledMap, width, height) {
+    return this.gu.worldCamera(tiledMap, width, height, this.pixiApp.view);
   }
 
   /**

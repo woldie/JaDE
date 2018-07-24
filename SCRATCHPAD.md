@@ -1,4 +1,32 @@
+# Scavengers ep 1 - The quest for T.C.
+
+Next steps:
+
+* Scene to scroll
+* Center on player sprite
+* Make prototype overworld
+* Teleport
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # JaDE - a Roguelike game engine and creative tools
+
 
 We will develop the following systems for the engine (in priority order):
 

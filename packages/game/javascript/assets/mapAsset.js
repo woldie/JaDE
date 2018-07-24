@@ -36,6 +36,24 @@ function MapAsset(name, tilesetName) {
    * @type {(null|Object)}
    */
   this.tilesetDescriptor = null;
+
+  /**
+   * @name {MapAsset#width}
+   * @type {number}
+   */
+  this.width = 0;
+
+  /**
+   * @name {MapAsset#height}
+   * @type {number}
+   */
+  this.height = 0;
+
+  /**
+   * @name MapAsset#camera
+   * @type {(null|Camera)}
+   */
+  this.camera = null;
 }
 
 MapAsset.prototype = Object.create(Asset.prototype);
