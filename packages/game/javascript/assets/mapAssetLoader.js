@@ -97,7 +97,6 @@ MapAssetLoader.prototype.postPixiLoad = function(mapAsset, allPixiResources) {
   }
 
   mapAsset.tilesetDescriptor = this.getTilesetDescriptor(mapAsset);
-  mapAsset.camera = this.display.makeCamera(mapAsset.areaMap, mapAsset.width, mapAsset.height);
 };
 
 /**

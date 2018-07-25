@@ -115,7 +115,7 @@ class Init {
         {name: "hero right", combo: "right", repeating: false,
           keyDown: function() { cosmos.playerState.right = true; },
           keyUp: function() { cosmos.playerState.right = false; }},
-        {name: "hero climb", combo: "k", repeating: false,
+        {name: "hero climb", combo: "c", repeating: false,
           keyDown: function() { },
           keyUp: function() { cosmos.commands.climb = true; }}
       ]);

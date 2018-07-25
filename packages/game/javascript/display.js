@@ -1,5 +1,9 @@
 "use strict";
 
+import forEach from "lodash.foreach";
+import clone from "lodash.clone";
+import remove from "lodash.remove";
+
 import { injector } from "jsuice";
 
 import GameUtilities from "pixi-game-utilities";
@@ -76,7 +80,13 @@ class Display {
   resetCurrentArea() {
     var currentArea = this.currentArea;
     if(currentArea) {
-      currentArea.areaMap.getObject("Sprites").removeChildren();
+
+      var spriteCollection = currentArea.areaMap.getObject("Sprites");
+      var sprites = clone(spriteCollection.children);
+      forEach(sprites, (sprite) => {
+        spriteCollection.removeChild(sprite);
+        remove(currentArea.areaMap.objects, (obj) => obj === sprite);
+      });
     }
   }
 

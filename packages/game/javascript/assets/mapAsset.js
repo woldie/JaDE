@@ -48,12 +48,6 @@ function MapAsset(name, tilesetName) {
    * @type {number}
    */
   this.height = 0;
-
-  /**
-   * @name MapAsset#camera
-   * @type {(null|Camera)}
-   */
-  this.camera = null;
 }
 
 MapAsset.prototype = Object.create(Asset.prototype);
