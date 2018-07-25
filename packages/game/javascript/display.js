@@ -64,19 +64,30 @@ class Display {
    * @private
    */
   removeCurrentAreaFromPixiApp() {
+    var currentArea = this.currentArea;
+    if(currentArea) {
+      this.pixiApp.stage.removeChild(currentArea.areaMap);
+    }
   }
 
   /**
    * @private
    */
   resetCurrentArea() {
+    var currentArea = this.currentArea;
+    if(currentArea) {
+      currentArea.areaMap.getObject("Sprites").removeChildren();
+    }
   }
 
   /**
    * @private
    */
   addCurrentAreaToPixiApp() {
-    this.pixiApp.stage.addChild(this.currentArea.areaMap);
+    var currentArea = this.currentArea;
+    if(currentArea) {
+      this.pixiApp.stage.addChild(currentArea.areaMap);
+    }
   }
 }
 

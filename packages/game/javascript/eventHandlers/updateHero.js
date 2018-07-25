@@ -28,8 +28,13 @@ export default class UpdateHero extends GameEventHandler {
   }
 
   onFrame(frameTime, frameDelta, frameId, cosmos) {
-    var currentArea = this.display.currentArea.areaMap;
-    var spritesLayer = currentArea.getObject("Sprites");
+    var currentArea = this.display.currentArea;
+    if(!currentArea) {
+      return;
+    }
+
+    var currentAreaMap = currentArea.areaMap;
+    var spritesLayer = currentAreaMap.getObject("Sprites");
     var heroSprite = find(spritesLayer.children, (child) => child.name === Constants.HERO);
 
     if(!heroSprite) {
@@ -37,12 +42,12 @@ export default class UpdateHero extends GameEventHandler {
           asset.name === Constants.HERO);
       heroSprite = heroAsset.createAnimatedSprite(this.PIXI, Constants.HERO);
       spritesLayer.addChild(heroSprite);
-      currentArea.objects.push(heroSprite);
+      currentAreaMap.objects.push(heroSprite);
     }
 
     // process any teleports here
     if(cosmos.commands.teleportTo) {
-      var justTeleportTos = filter(currentArea.objects, (obj) => obj.type === "teleport-to");
+      var justTeleportTos = filter(currentAreaMap.objects, (obj) => /(teleport-to|climb-to).*/.test(obj.type));
       var teleportPoint = find(justTeleportTos, (obj) => obj.name === cosmos.commands.teleportTo.objectName);
       if(!teleportPoint) {
         this.criticalError(`MAP ERROR in area ${cosmos.playerState.currentArea}: missing teleport`, cosmos.commands.teleportTo);
@@ -58,7 +63,7 @@ export default class UpdateHero extends GameEventHandler {
 
     // process climb commands
     if(cosmos.commands.climb) {
-      var justClimbFrom = filter(currentArea.objects, filter(currentArea.objects, (obj) => startsWith(obj.type, "climb-to-"));
+      var justClimbFrom = filter(currentAreaMap.objects, (obj) => startsWith(obj.type, "climb-to-"));
       var climbPoint = find(justClimbFrom, (obj) =>
           Utils.normalizeCoord(obj.x) === heroSprite.x && Utils.normalizeCoord(obj.y) === heroSprite.y);
 
@@ -68,11 +73,15 @@ export default class UpdateHero extends GameEventHandler {
         var climbToGroups = /climb-to-(.*)/.exec(climbPoint.type);
 
         cosmos.commands.changeArea = {
-          name: climbToGroups[1]
+          name: climbToGroups[1],
+          nextCycle: true
         };
         cosmos.commands.teleportTo = {
-          objectName: climbPoint.name
-        }
+          objectName: climbPoint.name,
+          nextCycle: true
+        };
+
+        cosmos.actionsTaken.push(`Hero climbs to ${climbToGroups}, teleporter ${climbPoint.name}`);
       }
       else {
         // TODO: give some message to the user that the climb failed

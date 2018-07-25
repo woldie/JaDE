@@ -62,12 +62,14 @@ class Init {
 
   run() {
     var handmadeMap = new MapAsset("HomeTown", "Scavengers"),
+      DamDungeonA = new MapAsset("DamDungeonA", "Scavengers"),
       fighterSprite = new AnimatedSpriteAsset(Constants.HERO, [
         { frameset: "default", frameCount: 2 }
       ]);
 
     this.assetManager.loadAll([
       handmadeMap,
+      DamDungeonA,
       fighterSprite
 
       // TODO:  create an animated sprite generator/loader class that will serve as an object sprite we will replace in the handmadeMap

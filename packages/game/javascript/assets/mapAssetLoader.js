@@ -43,10 +43,13 @@ MapAssetLoader.prototype = Object.create(AssetLoader.prototype);
  * @param {MapAsset} mapAsset
  */
 MapAssetLoader.prototype.prePixiLoad = function(mapAsset) {
-  this.PIXI.loader.add({
-    name: mapAsset.tilesetName,
-    url: this.getTilesetPng(mapAsset)
-  });
+  // only add the tileset asset if it hasn't already been queued up to be loaded
+  if(!find(this.PIXI.loader.resources, (resource) => resource.name === mapAsset.tilesetName)) {
+    this.PIXI.loader.add({
+      name: mapAsset.tilesetName,
+      url: this.getTilesetPng(mapAsset)
+    });
+  }
 };
 
 /**
