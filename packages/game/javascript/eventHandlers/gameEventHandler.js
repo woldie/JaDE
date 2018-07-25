@@ -54,12 +54,13 @@ export default class GameEventHandler {
    * @param {...*=} objectsToLog optional parameters that will be dumped to the console log
    */
   criticalError(message, objectsToLog) {
-    var formattedMsg = `Failure in ${this.type}: ${message}`;
-    alert(formattedMsg);
-    console.log(formattedMsg);
+    var formattedMsg = `Failure in ${this.type} event handler: ${message}`;
 
     var args = Array.from(arguments),
       i, ii;
+
+    alert(formattedMsg + (args.length > 1 ? ", see log for additional details" : ""));
+    console.log(formattedMsg);
 
     for(i = 1, ii = args.length; i < ii; i++) {
       console.log(args[i]);

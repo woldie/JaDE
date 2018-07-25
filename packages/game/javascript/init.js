@@ -19,34 +19,39 @@ class Init {
    * @param {GameLoop} gameLoop
    * @param {PIXI.Application} pixiApp
    * @param {Display} display
+   * @param {Keymap} keymap
    * @param {PIXI} PIXI
    */
-  constructor(assetManager, gameLoop, pixiApp, display, PIXI) {
-    var self = this;
-
+  constructor(assetManager, gameLoop, pixiApp, display, keymap, PIXI) {
     /**
      * @name Init#assetManager
      * @type {AssetManager}
      */
-    self.assetManager = assetManager;
+    this.assetManager = assetManager;
 
     /**
      * @name Init#pixiApp
      * @type {PIXI.Application}
      */
-    self.pixiApp = pixiApp;
+    this.pixiApp = pixiApp;
 
     /**
      * @name Init#display
      * @type {Display}
      */
-    self.display = display;
+    this.display = display;
 
     /**
      * @name Init#gameLoop
      * @type {GameLoop}
      */
     this.gameLoop = gameLoop;
+
+    /**
+     * @name {Init#keymap}
+     * @type {Keymap}
+     */
+    this.keymap = keymap;
 
     /**
      * @name Init#PIXI
@@ -56,14 +61,12 @@ class Init {
   }
 
   run() {
-    var self = this,
-
-      handmadeMap = new MapAsset("HomeTown", "Scavengers"),
+    var handmadeMap = new MapAsset("HomeTown", "Scavengers"),
       fighterSprite = new AnimatedSpriteAsset(Constants.HERO, [
         { frameset: "default", frameCount: 2 }
       ]);
 
-    self.assetManager.loadAll([
+    this.assetManager.loadAll([
       handmadeMap,
       fighterSprite
 
@@ -72,6 +75,12 @@ class Init {
       // the cosmos started out null and without form ... cosmos is sourced from the global window object so that it
       // can survive webpack hot reloads
       var cosmos = (window.cosmos = window.cosmos || {
+        playerState: {
+          up: 0,
+          down: 0,
+          left: 0,
+          right: 0
+        },
         commands: {},
         actionsTaken: []
       });
@@ -90,16 +99,36 @@ class Init {
       ]);
       this.gameLoop.changeCosmos(cosmos);
 
+      // keyboard mapping, we'll refactor this to live wherever it should it should in the future
+      this.keymap.pushProfile([
+        {name: "hero up", combo: "up", repeating: false,
+          keyDown: function() { cosmos.playerState.up = true; },
+          keyUp: function() { cosmos.playerState.up = false; }},
+        {name: "hero down", combo: "down", repeating: false,
+          keyDown: function() { cosmos.playerState.down = true; },
+          keyUp: function() { cosmos.playerState.down = false; }},
+        {name: "hero left", combo: "left", repeating: false,
+          keyDown: function() { cosmos.playerState.left = true; },
+          keyUp: function() { cosmos.playerState.left = false; }},
+        {name: "hero right", combo: "right", repeating: false,
+          keyDown: function() { cosmos.playerState.right = true; },
+          keyUp: function() { cosmos.playerState.right = false; }},
+        {name: "hero climb", combo: "k", repeating: false,
+          keyDown: function() { },
+          keyUp: function() { cosmos.commands.climb = true; }}
+      ]);
+
       // This is where area randomization and trigger prepping occurs.  This part might take a lot of CPU time.
 
       // set an area in the cosmos to transition to as our starting point if we don't already have one
-      if(!cosmos.currentArea) {
+      if(!cosmos.playerState.currentArea) {
         cosmos.commands.changeArea = {
           name: "HomeTown"
         };
+        cosmos.commands.teleportTo = {
+          objectName: "StartingPoint"
+        }
       }
-
-      // this.pixiApp.stage.addChild(fighterSprite.sprite);
     }, (err) => {
       console.log(err);
       alert("failed to load?!");
@@ -111,4 +140,4 @@ class Init {
 }
 
 export default injector.annotateConstructor(Init, injector.SINGLETON_SCOPE,
-  "assetManager", "gameLoop", "pixiApp", "display", "PIXI");
+  "assetManager", "gameLoop", "pixiApp", "display", "keymap", "PIXI");

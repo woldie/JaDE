@@ -33,14 +33,6 @@ export default class CenterCamera extends GameEventHandler {
   onFrame(frameTime, frameDelta, frameId, cosmos) {
     var heroSprite = this.display.currentArea.areaMap.getObject("Hero");
 
-    var nextX = Math.max(0, heroSprite.x + ((Math.round(Math.random() * 2) - 1) * 32));
-    var nextY = Math.max(0, heroSprite.y + ((Math.round(Math.random() * 2) - 1) * 32));
-
-    if(nextX !== heroSprite.x || nextY !== heroSprite.y) {
-      heroSprite.x = nextX;
-      heroSprite.y = nextY;
-
-      this.display.currentArea.camera.follow(heroSprite);
-    }
+    this.display.currentArea.camera.follow(heroSprite);
   }
 }

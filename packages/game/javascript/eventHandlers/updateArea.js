@@ -32,6 +32,7 @@ export default class UpdateArea extends GameEventHandler {
 
       this.display.changeCurrentArea(newAreaAsset);
 
+      cosmos.playerState.currentArea = newAreaName;
       cosmos.actionsTaken.push(`Area changed to '${newAreaName}'`);
     }
   }

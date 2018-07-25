@@ -3,6 +3,7 @@
 import { injector } from "jsuice";
 import * as Rx from "rxjs";
 import * as PIXI from "pixi.js";
+import keyboardJs from "keyboardjs";
 
 import provideAnimationFrameObservable from "./animationFrameObservable";
 import provideTiledUtils from "./tiledUtils";
@@ -12,6 +13,7 @@ import AnimatedSpriteAssetLoader from "./assets/animatedSpriteAssetLoader";
 import AssetManager from "./assetManager";
 import Display from "./display";
 import GameLoop from "./gameLoop";
+import Keymap from "./keymap";
 import Init from "./init";
 
 injector.newModuleGroup("jade", [
@@ -25,5 +27,7 @@ injector.newModuleGroup("jade", [
   "mapAssetLoader", MapAssetLoader,
   "animatedSpriteAssetLoader", AnimatedSpriteAssetLoader,
   "assetManager", AssetManager,
-  "display", Display
+  "display", Display,
+  "keyboardJs", keyboardJs,
+  "keymap", Keymap
 ]);
