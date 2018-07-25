@@ -64,10 +64,6 @@ class Init {
   }
 
   run() {
-    var handmadeMap = new MapAsset("HomeTown", "Scavengers"),
-      DamDungeonA = new MapAsset("DamDungeonA", "Scavengers"),
-      fighterSprite = new AnimatedSpriteAsset(Constants.HERO);
-
     var allMaps = map(require.context('../maps/', true, /\.json$/).keys(),
       (mapPath) => new MapAsset(/([a-zA-Z0-9_]+)\.json$/.exec(mapPath)[1], "Scavengers"));
     var allSprites = map(require.context('../sprites/', true, /\.png$/).keys(),
@@ -94,7 +90,7 @@ class Init {
 
       // initialize the game loop with event handlers
       this.gameLoop.start([
-        new UpdateArea(this.display, assets),
+        new UpdateArea(this.display, this.PIXI, assets),
         new UpdateHero(this.display, this.PIXI, assets),
         new CenterCamera(this.display, assets),
         new DebugCosmos()
