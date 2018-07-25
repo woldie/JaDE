@@ -1,10 +1,12 @@
 "use strict";
 
 import { injector } from "jsuice";
-import * as PIXI from "pixi.js";
+import Constants from "./constants";
 import MapAsset from "./assets/mapAsset";
 import AnimatedSpriteAsset from "./assets/animatedSpriteAsset";
 import UpdateArea from "./eventHandlers/updateArea";
+import UpdateHero from "./eventHandlers/updateHero";
+import CenterCamera from "./eventHandlers/centerCamera";
 import DebugCosmos from "./eventHandlers/debugCosmos";
 
 // testInkJson = require("../dialogue/test.json");
@@ -17,8 +19,9 @@ class Init {
    * @param {GameLoop} gameLoop
    * @param {PIXI.Application} pixiApp
    * @param {Display} display
+   * @param {PIXI} PIXI
    */
-  constructor(assetManager, gameLoop, pixiApp, display) {
+  constructor(assetManager, gameLoop, pixiApp, display, PIXI) {
     var self = this;
 
     /**
@@ -40,17 +43,23 @@ class Init {
     self.display = display;
 
     /**
-     *
+     * @name Init#gameLoop
      * @type {GameLoop}
      */
     this.gameLoop = gameLoop;
+
+    /**
+     * @name Init#PIXI
+     * @type {PIXI}
+     */
+    this.PIXI = PIXI;
   }
 
   run() {
     var self = this,
 
       handmadeMap = new MapAsset("HomeTown", "Scavengers"),
-      fighterSprite = new AnimatedSpriteAsset("fighter", [
+      fighterSprite = new AnimatedSpriteAsset(Constants.HERO, [
         { frameset: "default", frameCount: 2 }
       ]);
 
@@ -75,6 +84,8 @@ class Init {
       // initialize the game loop with event handlers
       this.gameLoop.start([
         new UpdateArea(this.display, assets),
+        new UpdateHero(this.display, this.PIXI, assets),
+        new CenterCamera(this.display, assets),
         new DebugCosmos()
       ]);
       this.gameLoop.changeCosmos(cosmos);
@@ -95,30 +106,9 @@ class Init {
     });
 
     // DELETE ME
-    //PIXI.loader
-    //  .add({
-    //    name: "fighter_01",
-    //    url: require("../tiles/fighter_01.png")
-    //  })
-    //  .add({
-    //    name: "tiled-example-ortho-outdoor",
-    //    url: require("../tilesets/tiled-example-ortho-outdoor.png")
-    //  })
-    //  .load(function(loader, resources) {
-    //    //var sprite = new PIXI.Sprite(PIXI.loader.resources["fighter_01"].texture);
-    //    //
-    //    //self.app.stage.addChild(sprite);
-    //    var world = self.tiledUtils.makeTiledWorld(require("../maps/testmap.json"), "tiled-example-ortho-outdoor");
-    //
-    //    var objectsLayer = world.getObject("objects");
-    //    console.log(objectsLayer);
-    //
-    //    self.app.stage.addChild(world);
-    //  });
-
     // runStory(testInkJson);
   }
 }
 
 export default injector.annotateConstructor(Init, injector.SINGLETON_SCOPE,
-  "assetManager", "gameLoop", "pixiApp", "display");
+  "assetManager", "gameLoop", "pixiApp", "display", "PIXI");

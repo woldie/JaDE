@@ -10,15 +10,23 @@ describe("AssetManager", function() {
     tiledUtils,
     mapAssetLoader,
     mockPIXI,
-    fakeTiledWorld;
+    mockDisplay;
+
+  function FakeContainer() {
+    this.children = [];
+  }
 
   beforeEach(function() {
-    fakeTiledWorld = { "tiled": "world" };
     tiledUtils = {
-      makeTiledWorld: sinon.fake.returns(fakeTiledWorld)
+      makeTiledWorld: sinon.fake()
     };
-    mockPIXI = {};
-    mapAssetLoader = new MapAssetLoader(mockPIXI, tiledUtils);
+    mockPIXI = {
+      Container: FakeContainer
+    };
+    mockDisplay = {
+      makeCamera: sinon.fake()
+    };
+    mapAssetLoader = new MapAssetLoader(mockPIXI, tiledUtils, mockDisplay);
     assetManager = new AssetManager(mockPIXI, mapAssetLoader);
   });
 
@@ -43,7 +51,10 @@ describe("AssetManager", function() {
     sinon.replace(MapAssetLoader.prototype, "getTilesetDescriptor", fakeDescriptor);
 
     // and a fake map JSON
-    var mapJson = { "imafake": true },
+    var mapJson = { layers: [
+      { type: "tilelayer", name: "Ground"},
+      { type: "tilelayer", name: "Roof"}
+    ]},
       fakeGetMap = sinon.fake.returns(mapJson);
     sinon.replace(MapAssetLoader.prototype, "getMapJson", fakeGetMap);
 
@@ -51,6 +62,27 @@ describe("AssetManager", function() {
     var fakeLoadedResources = {};
     var fakeTilesetTexture = { "png": "image url blah blah" };
     fakeLoadedResources[tileSetNameToLoad] = fakeTilesetTexture;
+
+    // and a mock Display that returns a camera
+    var fakeCamera = { "kaclick": true };
+    mockDisplay.makeCamera = sinon.fake.returns(fakeCamera);
+
+    // and a mock makeTiledWorld util that will return a tiled world
+    var groundLayer = { name: "Ground" };
+    var roofsLayer = { name: "Roof" };
+    var mockTiledWorld = {
+      children: [
+        groundLayer,
+        roofsLayer
+      ],
+      objects: [
+        groundLayer,
+        roofsLayer
+      ],
+      addChildAt: sinon.fake(),
+      removeChild: sinon.fake()
+    };
+    tiledUtils.makeTiledWorld = sinon.fake.returns(mockTiledWorld);
 
     mockPIXI.loader = {};
     mockPIXI.loader.add = sinon.fake();
@@ -79,7 +111,16 @@ describe("AssetManager", function() {
         // and our MapAssetLoader#postPixiLoad business logic was executed and MapAsset filled out as expected
         expect.equals(1, tiledUtils.makeTiledWorld.callCount, "makeTiledWorld was called");
         expect.equals(fakeTilesetTexture, mapAsset.tileset, "the tileset was pulled from loaded resources");
-        expect.equals(fakeTiledWorld, mapAsset.areaMap, "the tiled world returned from tiledUtils#makeTiledWorld");
+        expect.equals(mockTiledWorld, mapAsset.areaMap, "the tiled world returned from tiledUtils#makeTiledWorld");
+
+        // and our Roof layer was temporarily deleted
+        expect.equals(1, mapAsset.areaMap.removeChild.callCount);
+        expect.equals(roofsLayer, mapAsset.areaMap.removeChild.lastArg, "roof was removed");
+
+        // and a Sprites layer was added after Ground
+        expect.equals(1, mapAsset.areaMap.addChildAt.callCount);
+        var newSpritesLayer = mapAsset.areaMap.addChildAt.getCall(0).args[0];
+        expect.equals("Sprites", newSpritesLayer.name, "added sprites layer");
       }
     );
   });
