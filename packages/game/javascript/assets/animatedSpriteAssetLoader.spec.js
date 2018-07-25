@@ -16,8 +16,16 @@ describe("AnimatedSpriteAssetLoader", function() {
     animatedSpriteAssetLoader = new AnimatedSpriteAssetLoader(mockPIXI);
   });
 
+  afterEach(function() {
+    sinon.restore();
+  });
+
   it("will load the base texture using PIXI.js", function() {
-    // given asset to load
+    // given a mock asset description loader
+    var loadFrameDescriptions = sinon.fake.returns([]);
+    sinon.replace(AnimatedSpriteAsset.prototype, "loadFrameDescriptions", loadFrameDescriptions);
+
+    // and asset to load
     var bitmapName = "myBitmap";
     var animatedSpriteAsset = new AnimatedSpriteAsset(bitmapName);
 

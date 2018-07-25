@@ -3,6 +3,10 @@
 import Asset from "./asset"
 
 /**
+ * @typedef {Array.<{frameset: String, frameCount: Number}>} FrameDescriptions
+ */
+
+/**
  * Animated Sprite asset - bitmap that gets sliced and diced into animation frames and returned as a
  * PIXI.extras.AnimatedSprite.
  *
@@ -13,14 +17,22 @@ export default class AnimatedSpriteAsset extends Asset {
    * @param {String} name filename (sans .png extension) of the sprite PNG file to load, serves as identifier as well
    * @param {Array.<{frameset: String, frameCount: Number}>} frameDescriptions ordered set of frameset names and number of frames in set
    */
-  constructor(name, frameDescriptions) {
+  constructor(name) {
     super(name);
 
     /**
      * @name AnimatedSpriteAsset#frameDescriptions
-     * @type {Array.<{frameset: String, frameCount: Number}>}
+     * @type {FrameDescriptions}
      */
-    this.frameDescriptions = frameDescriptions;
+    this.frameDescriptions = this.loadFrameDescriptions();
+  }
+
+  /**
+   * @private
+   * @returns {FrameDescriptions}
+   */
+  loadFrameDescriptions() {
+    return require(`../../sprites/${this.name}.js`);
   }
 
   /**

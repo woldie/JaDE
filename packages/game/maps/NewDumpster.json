@@ -29,19 +29,19 @@
  "tiledversion":"1.1.5",
  "tileheight":32,
  "tilesets":[
-        {
-         "columns":12,
-         "firstgid":1,
-         "image":"..\/tilesets\/Scavengers.png",
-         "imageheight":64,
-         "imagewidth":384,
-         "margin":0,
-         "name":"Scavengers",
-         "spacing":0,
-         "tilecount":24,
-         "tileheight":32,
-         "tilewidth":32
-        }],
+  {
+   "columns":12,
+   "firstgid":1,
+   "image":"..\/tilesets\/Scavengers.png",
+   "imageheight":64,
+   "imagewidth":384,
+   "margin":0,
+   "name":"Scavengers",
+   "spacing":0,
+   "tilecount":24,
+   "tileheight":32,
+   "tilewidth":32
+  }],
  "tilewidth":32,
  "type":"map",
  "version":1,

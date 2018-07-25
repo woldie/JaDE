@@ -1,5 +1,8 @@
 "use strict";
 
+import map from "lodash.map";
+import concat from "lodash.concat";
+
 import { injector } from "jsuice";
 import Constants from "./constants";
 import MapAsset from "./assets/mapAsset";
@@ -63,17 +66,14 @@ class Init {
   run() {
     var handmadeMap = new MapAsset("HomeTown", "Scavengers"),
       DamDungeonA = new MapAsset("DamDungeonA", "Scavengers"),
-      fighterSprite = new AnimatedSpriteAsset(Constants.HERO, [
-        { frameset: "default", frameCount: 2 }
-      ]);
+      fighterSprite = new AnimatedSpriteAsset(Constants.HERO);
 
-    this.assetManager.loadAll([
-      handmadeMap,
-      DamDungeonA,
-      fighterSprite
+    var allMaps = map(require.context('../maps/', true, /\.json$/).keys(),
+      (mapPath) => new MapAsset(/([a-zA-Z0-9_]+)\.json$/.exec(mapPath)[1], "Scavengers"));
+    var allSprites = map(require.context('../sprites/', true, /\.png$/).keys(),
+      (spritePath) => new AnimatedSpriteAsset(/([a-zA-Z0-9_]+)\.png$/.exec(spritePath)[1]));
 
-      // TODO:  create an animated sprite generator/loader class that will serve as an object sprite we will replace in the handmadeMap
-    ]).then((assets) => {
+    this.assetManager.loadAll(concat(allMaps, allSprites)).then((assets) => {
       // the cosmos started out null and without form ... cosmos is sourced from the global window object so that it
       // can survive webpack hot reloads
       var cosmos = (window.cosmos = window.cosmos || {
