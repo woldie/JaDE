@@ -1,11 +1,14 @@
+import map from "lodash.map";
 import filter from "lodash.filter";
 import find from "lodash.find";
 import startsWith from "lodash.startswith"
 import isUndefined from "lodash.isundefined"
 
+import MapAsset from "../assets/mapAsset";
 import GameEventHandler from "./gameEventHandler";
 import Constants from "../constants";
-import Utils from "../utils";
+import Utils from "../utils"
+var isTruthy = Utils.isTruthy;
 
 var UPDATE_HERO_TYPE = "UpdateHero";
 
@@ -18,9 +21,10 @@ export default class UpdateHero extends GameEventHandler {
    * @param {Display} display
    * @param {PIXI} PIXI
    * @param {TileUtilities} tiledUtils
+   * @param {TextIo} textIo
    * @param {Array.<Asset>} assets
    */
-  constructor(display, PIXI, tiledUtils, assets) {
+  constructor(display, PIXI, tiledUtils, textIo, assets) {
     super();
 
     this.type = UPDATE_HERO_TYPE;
@@ -28,6 +32,7 @@ export default class UpdateHero extends GameEventHandler {
     this.PIXI = PIXI;
     this.tiledUtils = tiledUtils;
     this.display = display;
+    this.textIo = textIo;
   }
 
   onFrame(frameTime, frameDelta, frameId, cosmos) {
@@ -104,16 +109,22 @@ export default class UpdateHero extends GameEventHandler {
       if (climbPoint) {
         var climbToGroups = /climb-to-(.*)/.exec(climbPoint.type);
 
-        cosmos.commands.changeArea = {
-          name: climbToGroups[1],
-          nextCycle: 1
-        };
-        cosmos.commands.teleportTo = {
-          objectName: climbPoint.name,
-          nextCycle: 1
-        };
+        var targetArea = find(this.assets, (asset) => asset.name === climbToGroups[1]);
 
-        cosmos.actionsTaken.push(`${frameId} Hero climbs to ${climbToGroups}, teleporter ${climbPoint.name}`);
+        if(targetArea) {
+          cosmos.commands.changeArea = {
+            name: climbToGroups[1],
+            nextCycle: 1
+          };
+          cosmos.commands.teleportTo = {
+            objectName: climbPoint.name,
+            nextCycle: 1
+          };
+
+          cosmos.actionsTaken.push(`${frameId} Hero climbs to ${climbToGroups[1]}, teleporter ${climbPoint.name}`);
+
+          this.textIo.setInputText(`[c]limb to ${climbToGroups[1]}`);
+        }
       }
       else {
         // TODO: give some message to the user that the climb failed
@@ -122,13 +133,34 @@ export default class UpdateHero extends GameEventHandler {
       actionTaken = true;
     }
 
+    if(cosmos.commands.popToNextArea) {
+      cosmos.commands.popToNextArea = false;
+
+      var allMaps = filter(this.assets, (asset) => asset instanceof MapAsset);
+      var mapNames = map(allMaps, (aMap) => aMap.name);
+      var currentMapIndex = mapNames.indexOf(cosmos.playerState.currentArea);
+      var nextMapIndex = currentMapIndex + 1;
+      if (nextMapIndex >= mapNames.length) {
+        nextMapIndex = 0;
+      }
+
+      cosmos.commands.changeArea = {
+        name: mapNames[nextMapIndex],
+        nextCycle: 1
+      };
+      cosmos.commands.teleportTo = {
+        objectName: "StartingPoint",
+        nextCycle: 1
+      };
+    }
+
     // process keyboard entry
     if(isActionFrame) {
       var tileInfo;
 
       if (cosmos.playerState.up) {
         tileInfo = this.tiledUtils.getGroundAttributeAtCoords("walkable", currentArea, heroSprite.x, heroSprite.y - 32);
-        if (tileInfo.value) {
+        if (isTruthy(tileInfo.value)) {
           heroSprite.y -= 32;
           cosmos.actionsTaken.push(`Hero up`);
         }
@@ -140,7 +172,7 @@ export default class UpdateHero extends GameEventHandler {
       }
       if (cosmos.playerState.down) {
         tileInfo = this.tiledUtils.getGroundAttributeAtCoords("walkable", currentArea, heroSprite.x, heroSprite.y + 32);
-        if (tileInfo.value) {
+        if (isTruthy(tileInfo.value)) {
           heroSprite.y += 32;
           cosmos.actionsTaken.push(`Hero down`);
         }
@@ -152,7 +184,7 @@ export default class UpdateHero extends GameEventHandler {
       }
       if (cosmos.playerState.left) {
         tileInfo = this.tiledUtils.getGroundAttributeAtCoords("walkable", currentArea, heroSprite.x - 32, heroSprite.y);
-        if (tileInfo.value) {
+        if (isTruthy(tileInfo.value)) {
           heroSprite.x -= 32;
           cosmos.actionsTaken.push(`Hero left`);
         }
@@ -164,7 +196,7 @@ export default class UpdateHero extends GameEventHandler {
       }
       if (cosmos.playerState.right) {
         tileInfo = this.tiledUtils.getGroundAttributeAtCoords("walkable", currentArea, heroSprite.x + 32, heroSprite.y);
-        if (tileInfo.value) {
+        if (isTruthy(tileInfo.value)) {
           heroSprite.x += 32;
           cosmos.actionsTaken.push(`Hero right`);
         }

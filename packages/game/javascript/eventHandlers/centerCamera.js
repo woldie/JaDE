@@ -38,7 +38,9 @@ export default class CenterCamera extends GameEventHandler {
 
     var heroSprite = currentArea.areaMap.getObject("Hero");
 
-    var camera = this.display.makeCamera(currentArea.areaMap, currentArea.width, currentArea.height);
-    camera.follow(heroSprite);
+    if(heroSprite) {
+      var camera = this.display.makeCamera(currentArea.areaMap, currentArea.width, currentArea.height);
+      camera.follow(heroSprite);
+    }
   }
 }

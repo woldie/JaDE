@@ -12,6 +12,8 @@ import UpdateHero from "./eventHandlers/updateHero";
 import CenterCamera from "./eventHandlers/centerCamera";
 import DebugCosmos from "./eventHandlers/debugCosmos";
 
+import inGameKeyboardProfile from "./keyboardProfiles/inGame";
+
 // testInkJson = require("../dialogue/test.json");
 // import runStory from "./runStory";
 
@@ -24,9 +26,10 @@ class Init {
    * @param {Display} display
    * @param {Keymap} keymap
    * @param {TileUtilities} tiledUtils
+   * @param {TextIo} textIo
    * @param {PIXI} PIXI
    */
-  constructor(assetManager, gameLoop, pixiApp, display, keymap, tiledUtils, PIXI) {
+  constructor(assetManager, gameLoop, pixiApp, display, keymap, tiledUtils, textIo, PIXI) {
     /**
      * @name Init#assetManager
      * @type {AssetManager}
@@ -64,6 +67,12 @@ class Init {
     this.tiledUtils = tiledUtils;
 
     /**
+     * @name Init#textId
+     * @type {TextIo}
+     */
+    this.textIo = textIo;
+
+    /**
      * @name Init#PIXI
      * @type {PIXI}
      */
@@ -98,30 +107,14 @@ class Init {
       // initialize the game loop with event handlers
       this.gameLoop.start([
         new UpdateArea(this.display, this.PIXI, assets),
-        new UpdateHero(this.display, this.PIXI, this.tiledUtils, assets),
+        new UpdateHero(this.display, this.PIXI, this.tiledUtils, this.textIo, assets),
         new CenterCamera(this.display, assets),
         new DebugCosmos()
       ]);
       this.gameLoop.changeCosmos(cosmos);
 
       // keyboard mapping, we'll refactor this to live wherever it should it should in the future
-      this.keymap.pushProfile([
-        {name: "hero up", combo: "up", repeating: false,
-          keyDown: function() { cosmos.playerState.up = true; },
-          keyUp: function() { cosmos.playerState.up = false; }},
-        {name: "hero down", combo: "down", repeating: false,
-          keyDown: function() { cosmos.playerState.down = true; },
-          keyUp: function() { cosmos.playerState.down = false; }},
-        {name: "hero left", combo: "left", repeating: false,
-          keyDown: function() { cosmos.playerState.left = true; },
-          keyUp: function() { cosmos.playerState.left = false; }},
-        {name: "hero right", combo: "right", repeating: false,
-          keyDown: function() { cosmos.playerState.right = true; },
-          keyUp: function() { cosmos.playerState.right = false; }},
-        {name: "hero climb", combo: "c", repeating: false,
-          keyDown: function() { },
-          keyUp: function() { cosmos.commands.climb = true; }}
-      ]);
+      this.keymap.pushProfile(inGameKeyboardProfile);
 
       // This is where area randomization and trigger prepping occurs.  This part might take a lot of CPU time.
 
@@ -145,4 +138,4 @@ class Init {
 }
 
 export default injector.annotateConstructor(Init, injector.SINGLETON_SCOPE,
-  "assetManager", "gameLoop", "pixiApp", "display", "keymap", "tiledUtils", "PIXI");
+  "assetManager", "gameLoop", "pixiApp", "display", "keymap", "tiledUtils", "textIo", "PIXI");

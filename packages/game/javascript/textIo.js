@@ -16,11 +16,23 @@ class TextIo {
      * @name TextIo#inputDiv
      * @type {jQuery}
      */
-    this.inputDiv = $("<div class='inputBox'>&nbsp;&gt;&nbsp;</div>");
+    this.inputDiv = $(`<div class='inputBox'>
+      &nbsp;&gt;&nbsp;<span id='inputText'></span><span class='blinking-cursor'>|</span>
+    </div>`);
 
     $(document.body).append(this.ioContainerDiv);
     $(this.ioContainerDiv).append(this.outputDiv);
     $(this.ioContainerDiv).append(this.inputDiv);
+
+    /**
+     * @name TextIo#inputText
+     * @type {jQuery}
+     */
+    this.inputText = $(this.inputDiv).find("#inputText");
+  }
+
+  setInputText(html) {
+    this.inputText.html(html);
   }
 }
 

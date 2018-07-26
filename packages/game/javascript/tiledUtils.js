@@ -35,11 +35,20 @@ function provideTiledUtils() {
    * @param {MapAsset} mapAsset
    * @param {number} x
    * @param {number} y
-   * @returns {{attribute: string, value: *, gidAtCoords: number}} the attribute at that position or null if x and y are out of bounds of the map
+   * @returns {{attribute: string, value: (*|undefined), gidAtCoords: (undefined|number), x: number, y: number, spriteAtCoords: (undefined|*)}} the attribute at that position.  value is undefined if x or y are out of bounds of the map
    */
   tiledUtils.getGroundAttributeAtCoords = function(whichAttribute, mapAsset, x, y) {
+    var returnVal = {
+      attribute: whichAttribute,
+      value: undefined,
+      gidAtCoords: undefined,
+      spriteAtCoords: undefined,
+      x,
+      y
+    };
+
     if(x < 0 || y < 0 || x >= mapAsset.width || y >= mapAsset.height) {
-      return null;
+      return returnVal;
     }
 
     var tileIndex = this.getIndex(x, y, 32, 32, mapAsset.width / 32);
@@ -48,9 +57,9 @@ function provideTiledUtils() {
 
     var tileInfo = find(TileDescriptors, (tileDescriptor) => tileDescriptor.id == tile.gid);
 
-    var attribute = tileInfo[whichAttribute];
-    if(isUndefined(attribute)) {
-      attribute = false;
+    returnVal.value = tileInfo[whichAttribute];
+    if(isUndefined(returnVal.value)) {
+      returnVal.value = false;
     }
 
     var sprites = filter(mapAsset.areaMap.getObject("Sprites").children, (sprite) => sprite.name !== "Hero");
@@ -59,18 +68,13 @@ function provideTiledUtils() {
     if(spriteOnTile) {
       // npc's and items always block you from moving through them
       if(whichAttribute === "walkable") {
-        attribute = false;
+        returnVal.value = false;
       }
     }
 
-    return {
-      attribute: whichAttribute,
-      value: attribute,
-      gidAtCoords: tile.gid,
-      spriteAtCoords: !!spriteOnTile,
-      x,
-      y
-    };
+    returnVal.spriteAtCoords = !!spriteOnTile;
+    returnVal.gidAtCoords = tile.gid;
+    return returnVal;
   };
 
   return tiledUtils;

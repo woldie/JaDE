@@ -1,4 +1,6 @@
-Earth finally got its act together after a hundred thousand of years of disease, wars, and famine.  The energy and air pollution problem was largely solved by the development of fusion power and high capacity batteries.  Population growth tapered off at 11 billion with the increase in global wealth.  And, an intelligent robotic workforce took over the menial labor tasks, leaving the population with plenty of leasure time.
+[Title Sequence:  Scavengers ep. 1 - The Quest for T.C.]
+
+Earth finally got its act together after a hundred thousand of years of disease, wars, and famine.  The energy and air pollution problem was largely solved by the development of fusion power and high capacity batteries.  Population growth tapered off at 11 billion with the increase in global wealth.  And, an intelligent robotic workforce took over the menial labor tasks, leaving the population with plenty of leisure time.
 
 Great advances in medicine had eliminated most common diseases, and the human brain was fully mapped and completely understood.  A fantastic new technology for computer interactivity was developed that, for the first time, required no surgeries or implants.  "CraniumCross" allowed a celphone or computer to wirelessly interface with the brain, opening this tech up to the mass-market who was traditionally squeamish about bodymods.  Productivity did not soar however, because of the great distraction that this technology produced.  Highly addictive games were developed that hundreds of millions of players became utterly lost in, and many unscrupulous developers created intoxicating, drug-like experiences to trap their players.
 
@@ -22,7 +24,7 @@ HERO: "I KNOW, maaaaan!  I'ma tempt'd check it out."
 
 LEADER:  "Steve Leader thinks that Steve Leader needs a drink."
 
-HERO:  "I'ma GO!  `Dis aggression will largely not go unchallenged."
+HERO:  "I'ma GO!  `Dis aggression will largely not go under-challenged, maaan."
 
 [The scout dips down below the dam and starts bashing into the backside of the dam]
 [Screen shakes periodically, sound of crashing before each shake]
@@ -35,28 +37,30 @@ Another year passes ...
 
 [Screen unblanks]
 
-HERO:  "I'ma getting' reeeeeeal sick of 'dis damn scout, maaaaan!  Why don' it ever LEAVE!?"
+HERO:  "I'ma gettin' reeeeeeal sick of 'da damn scout, maaaaan!  Why it never LEAVE!?"
 
-ENGINEER:  "More, why don't we leave?  Eet's been smashing the dam's backside zince last July.  I'm worried about a breach zat would flood us out."
+ENGINEER:  "Moreover, why do we not leave?  Eet's been smashing the dam's backside zince last July.  I am worried there will be a breach zat would flood us out."
 
-HERO:  [muttered] "F--- `dis, maaan."
+HERO:  [muttered] "F dis', maaan."
 
 [Explosion behind the dam, a crack in the front appears and water is spraying out and down the front of the dam]
 
 LEADER: "Steve Leader has not yet had enough to drink to handle this new development."
 
-ENGINEER: "Nevertheless, Zteve Leader, it zeems we're in danger and need to move away."
+ENGINEER: "Nevertheless, Zteve Leader, it zeems my worst fears were realized.  We are in danger and need to move away now."
 
-HERO: "It bad, maaaan?  Just a little crack n' some sprinkle', maan."
+HERO: "It bad, maaaan?  Just a lil' crack n' some sprinkle', maan."
 
-ENGINEER: "Eh, perhaps not?"
+ENGINEER: [studying the damage closer] "Eh, perhaps not?"
 
-LEADER: "Ron, you better go check it out.  Take the tunnels inside the dam."
+LEADER: "Ron, you had better go check it out and find out what happened to the scout.  Steve Leader recommends taking the service tunnels inside the dam."
 
-HERO: "But, 'deres rodentia n' bats 'dere!"
+HERO: "B-but, 'deres rodentia n' bats!"
 
-LEADER: "Steve Leader understands this, but your bravery will overcome those minor annoyances and anyways it'll take too long to hike up around the west trail.  Steve Leader *needs to know* asap whether it's safe to stay.  Steve Leader needs to drink."
+LEADER: "Steve Leader understands this, but your storied bravery will overcome those trifles!  It'll take too long to hike up around the west trail, and Steve Leader needs to know *now* whether it's safe to stay.  Steve Leader needs to drink."
 
-HERO: [grumbles] "Steve Leader" [shows the whites of his eyes]
+HERO: [grumbles] "'Steve Leader', huh?" [shows the whites of his eyes]
 
 [Steve Leader hurries away to the tavern]
+
+[Player gets control of the keyboard]
