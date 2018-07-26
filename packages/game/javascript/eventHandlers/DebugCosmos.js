@@ -18,7 +18,7 @@ export default class DebugCosmos extends GameEventHandler {
       if(cosmos.commands.hasOwnProperty(c)) {
         var command = cosmos.commands[c];
 
-        if (!command.nextCycle) {
+        if (command.nextCycle <= 0) {
           unprocessedCount++;
         }
       }
@@ -31,8 +31,8 @@ export default class DebugCosmos extends GameEventHandler {
 
     // clear any nextCycle flags for commands we expect to be processed during the next frame
     forEach(cosmos.commands, (command) => {
-      if(command.nextCycle) {
-        command.nextCycle = false;
+      if(command.nextCycle > 0) {
+        command.nextCycle--;
       }
     });
   }

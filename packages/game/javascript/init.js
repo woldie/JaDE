@@ -23,9 +23,10 @@ class Init {
    * @param {PIXI.Application} pixiApp
    * @param {Display} display
    * @param {Keymap} keymap
+   * @param {TileUtilities} tiledUtils
    * @param {PIXI} PIXI
    */
-  constructor(assetManager, gameLoop, pixiApp, display, keymap, PIXI) {
+  constructor(assetManager, gameLoop, pixiApp, display, keymap, tiledUtils, PIXI) {
     /**
      * @name Init#assetManager
      * @type {AssetManager}
@@ -55,6 +56,12 @@ class Init {
      * @type {Keymap}
      */
     this.keymap = keymap;
+
+    /**
+     * @name Init#tiledUtils
+     * @type {TileUtilities}
+     */
+    this.tiledUtils = tiledUtils;
 
     /**
      * @name Init#PIXI
@@ -91,7 +98,7 @@ class Init {
       // initialize the game loop with event handlers
       this.gameLoop.start([
         new UpdateArea(this.display, this.PIXI, assets),
-        new UpdateHero(this.display, this.PIXI, assets),
+        new UpdateHero(this.display, this.PIXI, this.tiledUtils, assets),
         new CenterCamera(this.display, assets),
         new DebugCosmos()
       ]);
@@ -138,4 +145,4 @@ class Init {
 }
 
 export default injector.annotateConstructor(Init, injector.SINGLETON_SCOPE,
-  "assetManager", "gameLoop", "pixiApp", "display", "keymap", "PIXI");
+  "assetManager", "gameLoop", "pixiApp", "display", "keymap", "tiledUtils", "PIXI");

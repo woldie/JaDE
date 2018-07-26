@@ -17,14 +17,16 @@ export default class UpdateHero extends GameEventHandler {
    *
    * @param {Display} display
    * @param {PIXI} PIXI
+   * @param {TileUtilities} tiledUtils
    * @param {Array.<Asset>} assets
    */
-  constructor(display, PIXI, assets) {
+  constructor(display, PIXI, tiledUtils, assets) {
     super();
 
     this.type = UPDATE_HERO_TYPE;
     this.assets = assets;
     this.PIXI = PIXI;
+    this.tiledUtils = tiledUtils;
     this.display = display;
   }
 
@@ -49,21 +51,29 @@ export default class UpdateHero extends GameEventHandler {
     }
 
     // make the player wait for the number of frames matching his speed
-    if((cosmos.playerState.idleFrames--) <= 0) {
-      var actionTaken = this.processPlayerState(cosmos, currentAreaMap, heroSprite);
+    var isActionFrame = (cosmos.playerState.idleFrames--) <= 0;
 
-      // don't restart the player's action clock unless an action was actually taken
-      if(actionTaken) {
-        cosmos.playerState.idleFrames = cosmos.playerState.speed;
-      }
-      else {
-        cosmos.playerState.idleFrames = 0;
-      }
+    var actionTaken = this.processPlayerState(frameId, cosmos, currentArea, heroSprite, isActionFrame);
+
+    // don't restart the player's action clock unless an action was actually taken
+    if(actionTaken) {
+      cosmos.playerState.idleFrames = cosmos.playerState.speed;
+    }
+    else if(isActionFrame) {
+      cosmos.playerState.idleFrames = 0;
     }
   }
 
-  processPlayerState(cosmos, currentAreaMap, heroSprite) {
+  /**
+   * @param {number} frameId
+   * @param {Cosmos} cosmos
+   * @param {MapAsset} currentArea
+   * @param {PIXI.extras.AnimatedSprite} heroSprite
+   * @param {boolean} isActionFrame is this a frame where player can take an action? (walk, attack, etc)
+   */
+  processPlayerState(frameId, cosmos, currentArea, heroSprite, isActionFrame) {
     var actionTaken = false;
+    var currentAreaMap = currentArea.areaMap;
 
     // process any teleports here
     if (cosmos.commands.teleportTo) {
@@ -76,7 +86,7 @@ export default class UpdateHero extends GameEventHandler {
         heroSprite.x = Utils.normalizeCoord(teleportPoint.x);
         heroSprite.y = Utils.normalizeCoord(teleportPoint.y);
 
-        cosmos.actionsTaken.push(`Hero teleports to ${cosmos.commands.teleportTo}: ${heroSprite.x}, ${heroSprite.y}`);
+        cosmos.actionsTaken.push(`${frameId} Hero teleports to ${cosmos.commands.teleportTo}: ${heroSprite.x}, ${heroSprite.y}`);
       }
       delete cosmos.commands.teleportTo;
 
@@ -84,10 +94,10 @@ export default class UpdateHero extends GameEventHandler {
     }
 
     // process climb commands
-    else if (cosmos.commands.climb) {
+    if (cosmos.commands.climb) {
       var justClimbFrom = filter(currentAreaMap.objects, (obj) => startsWith(obj.type, "climb-to-"));
       var climbPoint = find(justClimbFrom, (obj) =>
-      Utils.normalizeCoord(obj.x) === heroSprite.x && Utils.normalizeCoord(obj.y) === heroSprite.y);
+          Utils.normalizeCoord(obj.x) === heroSprite.x && Utils.normalizeCoord(obj.y) === heroSprite.y);
 
       delete cosmos.commands.climb;
 
@@ -96,14 +106,14 @@ export default class UpdateHero extends GameEventHandler {
 
         cosmos.commands.changeArea = {
           name: climbToGroups[1],
-          nextCycle: true
+          nextCycle: 1
         };
         cosmos.commands.teleportTo = {
           objectName: climbPoint.name,
-          nextCycle: true
+          nextCycle: 1
         };
 
-        cosmos.actionsTaken.push(`Hero climbs to ${climbToGroups}, teleporter ${climbPoint.name}`);
+        cosmos.actionsTaken.push(`${frameId} Hero climbs to ${climbToGroups}, teleporter ${climbPoint.name}`);
       }
       else {
         // TODO: give some message to the user that the climb failed
@@ -112,29 +122,55 @@ export default class UpdateHero extends GameEventHandler {
       actionTaken = true;
     }
 
-    // keyboard entry
-    else {
+    // process keyboard entry
+    if(isActionFrame) {
+      var tileInfo;
+
       if (cosmos.playerState.up) {
-        heroSprite.y -= 32;
-        cosmos.actionsTaken.push(`Hero up`);
+        tileInfo = this.tiledUtils.getGroundAttributeAtCoords("walkable", currentArea, heroSprite.x, heroSprite.y - 32);
+        if (tileInfo.value) {
+          heroSprite.y -= 32;
+          cosmos.actionsTaken.push(`Hero up`);
+        }
+        else {
+          cosmos.actionsTaken.push(`Hero blocked (up): ${JSON.stringify(tileInfo, null, "")}`);
+        }
 
         actionTaken = true;
       }
       if (cosmos.playerState.down) {
-        heroSprite.y += 32;
-        cosmos.actionsTaken.push(`Hero down`);
+        tileInfo = this.tiledUtils.getGroundAttributeAtCoords("walkable", currentArea, heroSprite.x, heroSprite.y + 32);
+        if (tileInfo.value) {
+          heroSprite.y += 32;
+          cosmos.actionsTaken.push(`Hero down`);
+        }
+        else {
+          cosmos.actionsTaken.push(`Hero blocked (down): ${JSON.stringify(tileInfo, null, "")}`);
+        }
 
         actionTaken = true;
       }
       if (cosmos.playerState.left) {
-        heroSprite.x -= 32;
-        cosmos.actionsTaken.push(`Hero left`);
+        tileInfo = this.tiledUtils.getGroundAttributeAtCoords("walkable", currentArea, heroSprite.x - 32, heroSprite.y);
+        if (tileInfo.value) {
+          heroSprite.x -= 32;
+          cosmos.actionsTaken.push(`Hero left`);
+        }
+        else {
+          cosmos.actionsTaken.push(`Hero blocked (left): ${JSON.stringify(tileInfo, null, "")}`);
+        }
 
         actionTaken = true;
       }
       if (cosmos.playerState.right) {
-        heroSprite.x += 32;
-        cosmos.actionsTaken.push(`Hero right`);
+        tileInfo = this.tiledUtils.getGroundAttributeAtCoords("walkable", currentArea, heroSprite.x + 32, heroSprite.y);
+        if (tileInfo.value) {
+          heroSprite.x += 32;
+          cosmos.actionsTaken.push(`Hero right`);
+        }
+        else {
+          cosmos.actionsTaken.push(`Hero blocked (right): ${JSON.stringify(tileInfo, null, "")}`);
+        }
 
         actionTaken = true;
       }
@@ -150,9 +186,11 @@ export default class UpdateHero extends GameEventHandler {
   initPlayerStateIfNecc(cosmos) {
     if(isUndefined(cosmos.playerState.speed)) {
       cosmos.playerState.speed = 6;
+      cosmos.actionsTaken.push(`playerState.speed initialized to ${cosmos.playerState.speed}`);
     }
     if(isUndefined(cosmos.playerState.idleFrames)) {
       cosmos.playerState.idleFrames = 0;
+      cosmos.actionsTaken.push(`playerState.idleFrames initialized to ${cosmos.playerState.idleFrames}`);
     }
   }
 }
