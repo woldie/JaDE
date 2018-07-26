@@ -152,6 +152,10 @@ export default class UpdateHero extends GameEventHandler {
         objectName: "StartingPoint",
         nextCycle: 1
       };
+
+      cosmos.actionsTaken.push(`${frameId} Programmer pops to ${mapNames[nextMapIndex]}`);
+
+      this.textIo.setInputText(`[p]op to ${mapNames[nextMapIndex]}`);
     }
 
     // process keyboard entry

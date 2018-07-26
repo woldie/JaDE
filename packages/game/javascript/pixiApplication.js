@@ -9,8 +9,8 @@ import $ from "jquery";
 function providePixiApplication(PIXI) {
   console.log("Provide Pixi application");
   var pixiApp = new PIXI.Application({
-    width: 20 * 32,    // default: 800
-    height: 10 * 32,   // default: 600
+    width: 2000,        // default: 800
+    height: 10 * 32,    // default: 600
     antialias: false,   // default: false
     transparent: false, // default: false
     resolution: 1,      // default: 1
@@ -18,10 +18,14 @@ function providePixiApplication(PIXI) {
   });
 
   pixiApp.renderer.autoResize = true;
-  //pixiApp.renderer.resize(5000, 5000);
   pixiApp.renderer.backgroundColor = 0x061639;
 
-  $(document.body).prepend(pixiApp.view);
+  /**
+   * @name PIXI.Application#pixiContainer
+   * @type {jQuery}
+   */
+  pixiApp.pixiContainer = $("<div class='pixiContainer'></div>").prependTo(document.body);
+  pixiApp.pixiContainer.append(pixiApp.view);
 
   return pixiApp;
 }

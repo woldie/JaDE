@@ -1,3 +1,15 @@
+.pixiContainer {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 320px;
+    display: block;
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    border: 0;
+}
+
 .ioContainer {
     display: block;
     position: relative;
