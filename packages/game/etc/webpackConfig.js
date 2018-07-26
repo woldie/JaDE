@@ -18,7 +18,7 @@ function webpackConfig(watch) {
           test: /\.css$/i,
           use: [
             'style-loader',
-            'css-loader`'
+            'css-loader'
           ]
         },
         {

@@ -14,6 +14,7 @@ import AssetManager from "./assetManager";
 import Display from "./display";
 import GameLoop from "./gameLoop";
 import Keymap from "./keymap";
+import TextIo from "./textIo";
 import Init from "./init";
 
 injector.newModuleGroup("jade", [
@@ -29,5 +30,6 @@ injector.newModuleGroup("jade", [
   "assetManager", AssetManager,
   "display", Display,
   "keyboardJs", keyboardJs,
-  "keymap", Keymap
+  "keymap", Keymap,
+  "textIo", TextIo
 ]);

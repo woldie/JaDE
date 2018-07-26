@@ -13,6 +13,8 @@
 
 "use strict";
 
+require("../stylesheets/scavengers.css");
+
 import { injector } from "jsuice";
 import "./jadeModule";
 

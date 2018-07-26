@@ -10,7 +10,7 @@ function providePixiApplication(PIXI) {
   console.log("Provide Pixi application");
   var pixiApp = new PIXI.Application({
     width: 20 * 32,    // default: 800
-    height: 20 * 32,   // default: 600
+    height: 10 * 32,   // default: 600
     antialias: false,   // default: false
     transparent: false, // default: false
     resolution: 1,      // default: 1
@@ -21,7 +21,7 @@ function providePixiApplication(PIXI) {
   //pixiApp.renderer.resize(5000, 5000);
   pixiApp.renderer.backgroundColor = 0x061639;
 
-  $(document.body).append(pixiApp.view);
+  $(document.body).prepend(pixiApp.view);
 
   return pixiApp;
 }
