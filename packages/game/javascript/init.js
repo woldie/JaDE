@@ -7,6 +7,7 @@ import { injector } from "jsuice";
 import Constants from "./constants";
 import MapAsset from "./assets/mapAsset";
 import AnimatedSpriteAsset from "./assets/animatedSpriteAsset";
+import ResizePixiCanvas from "./eventHandlers/resizePixiCanvas";
 import UpdateArea from "./eventHandlers/updateArea";
 import UpdateHero from "./eventHandlers/updateHero";
 import CenterCamera from "./eventHandlers/centerCamera";
@@ -96,7 +97,9 @@ class Init {
           right: 0
         },
         commands: {},
-        actionsTaken: []
+        actionsTaken: [],
+        canvasWidth: 0,
+        canvasHeight: 0
       });
 
       // Here we will process the objects layers in all of our areas, looking for starting points, NPC's, items to
@@ -106,6 +109,7 @@ class Init {
 
       // initialize the game loop with event handlers
       this.gameLoop.start([
+        new ResizePixiCanvas(this.pixiApp),
         new UpdateArea(this.display, this.PIXI, assets),
         new UpdateHero(this.display, this.PIXI, this.tiledUtils, this.textIo, assets),
         new CenterCamera(this.display, assets),
