@@ -1,4 +1,5 @@
-{ "height":8,
+{ "backgroundcolor":"#000000",
+ "height":8,
  "infinite":false,
  "layers":[
         {
@@ -11,26 +12,60 @@
          "width":48,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "name":"Objects",
+         "objects":[
+                {
+                 "height":0,
+                 "id":1,
+                 "name":"DamDungeonB-DamDungeonC",
+                 "point":true,
+                 "rotation":0,
+                 "type":"climb-to-DamDungeonB",
+                 "visible":true,
+                 "width":0,
+                 "x":45,
+                 "y":14
+                }, 
+                {
+                 "height":0,
+                 "id":2,
+                 "name":"DamDungeonC-TopOfDam",
+                 "point":true,
+                 "rotation":0,
+                 "type":"climb-to-TopOfDam",
+                 "visible":true,
+                 "width":0,
+                 "x":1423,
+                 "y":10
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextobjectid":1,
+ "nextobjectid":3,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.1.6",
+ "tiledversion":"1.1.5",
  "tileheight":32,
  "tilesets":[
-  {
-   "columns":12,
-   "firstgid":1,
-   "image":"..\/tilesets\/Scavengers.png",
-   "imageheight":64,
-   "imagewidth":384,
-   "margin":0,
-   "name":"Scavengers",
-   "spacing":0,
-   "tilecount":24,
-   "tileheight":32,
-   "tilewidth":32
-  }],
+        {
+         "columns":12,
+         "firstgid":1,
+         "image":"..\/tilesets\/Scavengers.png",
+         "imageheight":96,
+         "imagewidth":384,
+         "margin":0,
+         "name":"Scavengers",
+         "spacing":0,
+         "tilecount":36,
+         "tileheight":32,
+         "tilewidth":32
+        }],
  "tilewidth":32,
  "type":"map",
  "version":1,
