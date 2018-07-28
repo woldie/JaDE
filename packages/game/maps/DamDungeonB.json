@@ -28,6 +28,18 @@
                  "width":0,
                  "x":112,
                  "y":11
+                }, 
+                {
+                 "height":0,
+                 "id":2,
+                 "name":"DamDungeonB-to-DamDungeonC",
+                 "point":true,
+                 "rotation":0,
+                 "type":"climb-to-DamDungeonC",
+                 "visible":true,
+                 "width":0,
+                 "x":1421,
+                 "y":16
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -35,7 +47,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":2,
+ "nextobjectid":3,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.1.5",
