@@ -10,6 +10,7 @@ import provideTiledUtils from "./tiledUtils";
 import providePixiApplication from "./pixiApplication";
 import MapAssetLoader from "./assets/mapAssetLoader";
 import AnimatedSpriteAssetLoader from "./assets/animatedSpriteAssetLoader";
+import InkAssetLoader from "./assets/inkAssetLoader";
 import AssetManager from "./assetManager";
 import Display from "./display";
 import GameLoop from "./gameLoop";
@@ -27,6 +28,7 @@ injector.newModuleGroup("jade", [
   "pixiApp", providePixiApplication,
   "mapAssetLoader", MapAssetLoader,
   "animatedSpriteAssetLoader", AnimatedSpriteAssetLoader,
+  "inkAssetLoader", InkAssetLoader,
   "assetManager", AssetManager,
   "display", Display,
   "keyboardJs", keyboardJs,

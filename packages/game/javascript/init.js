@@ -6,10 +6,12 @@ import concat from "lodash.concat";
 import { injector } from "jsuice";
 import Constants from "./constants";
 import MapAsset from "./assets/mapAsset";
+import InkAsset from "./assets/inkAsset";
 import AnimatedSpriteAsset from "./assets/animatedSpriteAsset";
 import ResizePixiCanvas from "./eventHandlers/resizePixiCanvas";
 import UpdateArea from "./eventHandlers/updateArea";
 import UpdateHero from "./eventHandlers/updateHero";
+import UpdateNpcs from "./eventHandlers/updateNpcs";
 import CenterCamera from "./eventHandlers/centerCamera";
 import DebugCosmos from "./eventHandlers/debugCosmos";
 
@@ -68,7 +70,7 @@ class Init {
     this.tiledUtils = tiledUtils;
 
     /**
-     * @name Init#textId
+     * @name Init#textIo
      * @type {TextIo}
      */
     this.textIo = textIo;
@@ -85,8 +87,14 @@ class Init {
       (mapPath) => new MapAsset(/([a-zA-Z0-9_]+)\.json$/.exec(mapPath)[1], "Scavengers"));
     var allSprites = map(require.context('../sprites/', true, /\.png$/).keys(),
       (spritePath) => new AnimatedSpriteAsset(/([a-zA-Z0-9_]+)\.png$/.exec(spritePath)[1]));
+    var allInkScripts = map(require.context('../dialogue/', true, /\.json$/).keys(),
+      (inkPath) => new InkAsset(/([a-zA-Z0-9_]+)\.json$/.exec(inkPath)[1]));
 
-    this.assetManager.loadAll(concat(allMaps, allSprites)).then((assets) => {
+    this.assetManager.loadAll(concat(allMaps, allSprites, allInkScripts)).then((assets) => {
+      // dump to the console what all got loaded
+      var loadedMessages = map(assets, (asset) => `${asset.getType()}(${asset.name})`);
+      console.log("Assets successfully loaded", loadedMessages);
+
       // the cosmos started out null and without form ... cosmos is sourced from the global window object so that it
       // can survive webpack hot reloads
       var cosmos = (window.cosmos = window.cosmos || {
@@ -96,6 +104,7 @@ class Init {
           left: 0,
           right: 0
         },
+        npcStates: [],
         commands: {},
         actionsTaken: [],
         canvasWidth: 0,
@@ -112,6 +121,7 @@ class Init {
         new ResizePixiCanvas(this.pixiApp),
         new UpdateArea(this.display, this.PIXI, assets),
         new UpdateHero(this.display, this.PIXI, this.tiledUtils, this.textIo, assets),
+        new UpdateNpcs(assets, this.display, this.tiledUtils),
         new CenterCamera(this.display, assets),
         new DebugCosmos()
       ]);

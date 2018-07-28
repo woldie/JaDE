@@ -9,13 +9,10 @@ import Asset from "./asset"
 /**
  * Animated Sprite asset - bitmap that gets sliced and diced into animation frames and returned as a
  * PIXI.extras.AnimatedSprite.
- *
- * @extends {Asset}
  */
 export default class AnimatedSpriteAsset extends Asset {
   /**
    * @param {String} name filename (sans .png extension) of the sprite PNG file to load, serves as identifier as well
-   * @param {Array.<{frameset: String, frameCount: Number}>} frameDescriptions ordered set of frameset names and number of frames in set
    */
   constructor(name) {
     super(name);
@@ -58,5 +55,9 @@ export default class AnimatedSpriteAsset extends Asset {
     sprite.name = name;
 
     return sprite;
+  }
+
+  getType() {
+    return "AnimatedSpriteAsset";
   }
 }

@@ -3,6 +3,7 @@
 import { injector } from "jsuice";
 import Promise from "bluebird";
 
+import InkAsset from "./assets/inkAsset";
 import MapAsset from "./assets/mapAsset";
 import AnimatedSpriteAsset from "./assets/animatedSpriteAsset";
 import AssetLoader from "./assets/assetLoader";
@@ -11,9 +12,10 @@ import AssetLoader from "./assets/assetLoader";
  * @param {PIXI} PIXI
  * @param {MapAssetLoader} mapAssetLoader
  * @param {AnimatedSpriteAssetLoader} animatedSpriteAssetLoader
+ * @param {InkAssetLoader} inkAssetLoader
  * @constructor
  */
-function AssetManager(PIXI, mapAssetLoader, animatedSpriteAssetLoader) {
+function AssetManager(PIXI, mapAssetLoader, animatedSpriteAssetLoader, inkAssetLoader) {
   /**
    * @name AssetManager#PIXI
    * @type {PIXI}
@@ -31,6 +33,12 @@ function AssetManager(PIXI, mapAssetLoader, animatedSpriteAssetLoader) {
    * @type {AnimatedSpriteAssetLoader}
    */
   this.animatedSpriteAssetLoader = animatedSpriteAssetLoader;
+
+  /**
+   * @name AssetManager#inkAssetLoader
+   * @type {InkAssetLoader}
+   */
+  this.inkAssetLoader = inkAssetLoader;
 }
 
 /**
@@ -78,8 +86,11 @@ AssetManager.prototype.getLoaderForAsset = function(asset) {
   else if(asset instanceof AnimatedSpriteAsset) {
     return this.animatedSpriteAssetLoader;
   }
+  else if(asset instanceof InkAsset) {
+    return this.inkAssetLoader;
+  }
   throw new Error("Unknown asset type");
 };
 
 export default injector.annotateConstructor(AssetManager, injector.SINGLETON_SCOPE, "PIXI", "mapAssetLoader",
-  "animatedSpriteAssetLoader");
+  "animatedSpriteAssetLoader", "inkAssetLoader");

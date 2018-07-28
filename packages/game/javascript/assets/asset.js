@@ -1,18 +1,19 @@
-"use strict";
-
 /**
  * @abstract
- * @constructor
- * @param {String} name asset's identifier
  */
-function Asset(name) {
+export default class Asset {
   /**
-   * @name MapAsset#name
-   * @type {String}
+   * @param {String} name asset's identifier
    */
-  this.name = name;
+  constructor(name) {
+    /**
+     * @name MapAsset#name
+     * @type {String}
+     */
+    this.name = name;
+  }
+
+  getType() {
+    throw new Error("Abstract base");
+  }
 }
-
-
-
-export default Asset;

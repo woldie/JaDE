@@ -28,7 +28,11 @@ function provideTiledUtils() {
   var tiledUtils = new _TileUtilities(PIXI);
 
   /**
-   * Get an attribute from the tiles and sprites at coordinates
+   * Get an attribute from the tiles and sprites at coordinates.
+   *
+   * Assumption: if you're calling to determine walkability for a sprite, you haven't already
+   * moved that sprite to x/y as any sprite already at that location (including the one you're
+   * testing for) will not be walkable.
    *
    * @this {TileUtilities}
    * @param {String} whichAttribute
@@ -62,7 +66,7 @@ function provideTiledUtils() {
       returnVal.value = false;
     }
 
-    var sprites = filter(mapAsset.areaMap.getObject("Sprites").children, (sprite) => sprite.name !== "Hero");
+    var sprites = mapAsset.areaMap.getObject("Sprites").children;
     var spriteOnTile = find(sprites, (sprite) => sprite.x === x && sprite.y === y);
 
     if(spriteOnTile) {

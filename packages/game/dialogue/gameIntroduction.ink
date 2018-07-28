@@ -1,14 +1,14 @@
 [Title Sequence:  Scavengers ep. 1 - The Quest for T.C.]
 
-Earth finally got its act together after a hundred thousand of years of disease, wars, and famine.  The energy and air pollution problem was largely solved by the development of fusion power and high capacity batteries.  Population growth tapered off at 11 billion with the increase in global wealth.  And, an intelligent robotic workforce took over the menial labor tasks, leaving the population with plenty of leisure time.
+Earth finally got its act together after a hundred thousand of years of disease, wars, and famine.  The energy and air pollution problem was largely solved by the development of fusion power and high capacity batteries.  Population growth tapered off at 11 billion with the increase in global wealth.  And, an intelligent robotic workforce took over all menial labor tasks, leaving the population with plenty of leisure time.
 
-Great advances in medicine had eliminated most common diseases, and the human brain was fully mapped and completely understood.  A fantastic new technology for computer interactivity was developed that, for the first time, required no surgeries or implants.  "CraniumCross" allowed a celphone or computer to wirelessly interface with the brain, opening this tech up to the mass-market who was traditionally squeamish about bodymods.  Productivity did not soar however, because of the great distraction that this technology produced.  Highly addictive games were developed that hundreds of millions of players became utterly lost in, and many unscrupulous developers created intoxicating, drug-like experiences to trap their players.
+Great advances in medicine had eliminated most common diseases, and the human brain was fully mapped and completely understood.  A fantastic new technology for computer interactivity was developed that, for the first time, required no surgeries or implants.  "CraniumCross(tm)" allowed a celphone or computer to wirelessly interface with the brain, opening this tech up to the mass-market who was traditionally squeamish about bodymods.  Productivity did not soar however, because of the great distraction that this technology produced.  Highly addictive games were developed that hundreds of millions of players became utterly lost in, and many unscrupulous developers created intoxicating, drug-like experiences to trap their players.
 
 Suddenly, without warning, into this prosperous and distracted land, thousands of alien "scout" ships arrived from space and proceeded to attack our cities.  Their charged plasma weapons were primarily directed at individuals, vaporizing them wherever they were, leaving gaping holes in buildings that they fired through.  Down to the smallest township, it seemed the aliens were determined to wipe out the human race.  But, mysteriously, some were spared.
 
 Only the toughest survived.  Seven years after "the attack", those that remain have banded together into small groups.  Scouts still patrol the skies incessantly, and it is now generally understood that large groups of people trigger the scouts to attack.  So, this keeps us apart, and forces us into protective tribal bands.  Tribes survive by looting the remains of cities for necessities and trade with one another when possible for luxury goods.  
 
-Our band of heroes has claimed a Southwestern hydro-electric dam as their territory and the engineer in the group has gotten the dam working for power.  This drew a lot of attention, and too many people were gathered in HomeTown.  A scout appeared over the dam, apparently preparing to attack.
+Our band of heroes has claimed a Southwestern hydro-electric dam as their territory and the engineer in the group has gotten the dam working for power.  This drew a lot of attention, and too many people were gathered in HomeTown.  A scout appears over the dam, apparently preparing to attack.
 
 HERO: "HEY!  You all gon' DIIIIIE if you don' leave now, maaaaan!"
 
@@ -33,7 +33,7 @@ HERO:  "Upon reflection, I'ma take a wait-n'-see on 'dis."
 
 [Screen blanks]
 
-Another year passes ...
+CHIRON: Another year passes ...
 
 [Screen unblanks]
 
@@ -53,11 +53,11 @@ HERO: "It bad, maaaan?  Just a lil' crack n' some sprinkle', maan."
 
 ENGINEER: [studying the damage closer] "Eh, perhaps not?"
 
-LEADER: "Ron, you had better go check it out and find out what happened to the scout.  Steve Leader recommends taking the service tunnels inside the dam."
+LEADER: "Ron, you had better go find out what happened to the scout.  Steve Leader recommends taking the service tunnels inside the dam."
 
 HERO: "B-but, 'deres rodentia n' bats!"
 
-LEADER: "Steve Leader understands this, but your storied bravery will overcome those trifles!  It'll take too long to hike up around the west trail, and Steve Leader needs to know *now* whether it's safe to stay.  Steve Leader needs to drink."
+LEADER: "Steve Leader understands this, but your storied bravery will overcome!  Besides, it'll take too long to hike up around the west trail, and Steve Leader needs to know *now* whether it's safe to stay.  Steve Leader needs to drink heavily."
 
 HERO: [grumbles] "'Steve Leader', huh?" [shows the whites of his eyes]
 

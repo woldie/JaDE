@@ -10,15 +10,17 @@ class TextIo {
      * @name TextIo#outputDiv
      * @type {jQuery}
      */
-    this.outputDiv = $("<div class='outputBox'>Output goes here<br />... and here.</div>");
+    this.outputDiv = $(`<div class='outputBox'><div class='inner'>
+      Output goes here<br />... and here.
+    </div></div>`);
 
     /**
      * @name TextIo#inputDiv
      * @type {jQuery}
      */
-    this.inputDiv = $(`<div class='inputBox'>
-      &nbsp;&gt;&nbsp;<span id='inputText'></span><span class='blinking-cursor'>|</span>
-    </div>`);
+    this.inputDiv = $(`<div class='inputBox'><div class='inner'>
+      &raquo;&nbsp;<span id='inputText'></span><span class='blinking-cursor'>|</span>
+    </div></div>`);
 
     $(document.body).append(this.ioContainerDiv);
     $(this.ioContainerDiv).append(this.outputDiv);

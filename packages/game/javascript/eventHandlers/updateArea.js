@@ -5,6 +5,7 @@ import forEach from "lodash.foreach";
 import GameEventHandler from "./gameEventHandler";
 import Constants from "../constants";
 import Utils from "../utils";
+import Npc from "../npc";
 
 var UPDATE_AREA_TYPE = "UpdateArea";
 
@@ -42,21 +43,10 @@ export default class UpdateArea extends GameEventHandler {
 
       // place NPC's
       var newMap = /** @type {PIXI.Container} */ newAreaAsset.areaMap;
-      var spritesLayer = newMap.getObject("Sprites");
       forEach(filter(newMap.objects, (obj) => obj.type === "npc"), (npcObj) => {
-        var nameParts = /([a-zA-Z0-9_]+)(-(.*))?/.exec(npcObj.name);
-        var spriteName = nameParts[1];
-        var npcName = npcObj.name.indexOf('-') >= 0 ? nameParts[3] : nameParts[1];
+        var newNpc = new Npc();
 
-        var npcAsset = find(this.assets, (asset) => asset.name === spriteName);
-
-        var npcSprite = npcAsset.createAnimatedSprite(this.PIXI, spriteName);
-        spritesLayer.addChild(npcSprite);
-        npcSprite.x = Utils.normalizeCoord(npcObj.x);
-        npcSprite.y = Utils.normalizeCoord(npcObj.y);
-        newMap.objects.push(npcSprite);
-
-        cosmos.actionsTaken.push(`  NPC placed '${npcName}'`);
+        newNpc.placeNpc(npcObj, newMap, this.assets, this.PIXI, cosmos);
       });
     }
   }

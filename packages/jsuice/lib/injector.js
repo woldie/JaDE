@@ -38,6 +38,15 @@ function Injector() {
   self.scopeStack = [];
 }
 
+Injector.prototype.reset = function() {
+  var c;
+  for(c in this.scopes) {
+    if(this.scopes.hasOwnProperty(c)) {
+      this.scopes[c] = [];
+    }
+  }
+};
+
 /**
  * Make a new module group and add it to the Injector.
  *

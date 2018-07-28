@@ -13,10 +13,23 @@
 
 "use strict";
 
+import $ from "jquery";
+
 require("../stylesheets/scavengers.css");
 
 import { injector } from "jsuice";
 import "./jadeModule";
 
-var init = /** @type {Init} */ injector.getInstance("init");
-init.run();
+(/** @type {Init} */ injector.getInstance("init")).run();
+
+// TODO: make chunked hot reloading work
+//if (module.hot) {
+//  module.hot.accept(['./jadeModule.js', './init.js'], function() {
+//    console.log("Hot reload ...");
+//
+//    $(body).empty();
+//    injector.reset();
+//
+//    (/** @type {Init} */ injector.getInstance("init")).run();
+//  });
+//}
