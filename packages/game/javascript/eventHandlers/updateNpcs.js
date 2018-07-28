@@ -9,13 +9,15 @@ export default class UpdateNpcs extends GameEventHandler {
    * @param {Array.<Asset>} assets
    * @param {Display} display
    * @param {TileUtilities} tiledUtils
+   * @param {TextIo} textIo
    */
-  constructor(assets, display, tiledUtils) {
+  constructor(assets, display, tiledUtils, textIo) {
     super();
 
     this.assets = assets;
     this.display = display;
     this.tiledUtils = tiledUtils;
+    this.textIo = textIo;
   }
 
   onFrame(frameTime, frameDelta, frameId, cosmos) {
@@ -70,6 +72,6 @@ export default class UpdateNpcs extends GameEventHandler {
   }
 
   processAsMonster(currentArea, npcState, npcSprite, cosmos, frameId) {
-
+    this.textIo.addOutputLine("EEEEK MONSTER!!");
   }
 }

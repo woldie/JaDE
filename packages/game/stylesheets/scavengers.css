@@ -44,14 +44,13 @@
     line-height: 24px;
     vertical-align: top;
     height: 72px;
-    overflow: auto;
     padding: 2px 0 0 0;
 }
 
 .ioContainer .inner {
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    overflow: auto;
     margin: 0 4px;
     padding: 0;
     display: block;

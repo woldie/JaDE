@@ -52,12 +52,15 @@ function provideTiledUtils() {
     };
 
     if(x < 0 || y < 0 || x >= mapAsset.width || y >= mapAsset.height) {
-      return returnVal;
+      return returnVal; // not found
     }
 
     var tileIndex = this.getIndex(x, y, 32, 32, mapAsset.width / 32);
 
     var tile = mapAsset.areaMap.getObject("Ground").children[tileIndex];
+    if(tileIndex <= 0 || isUndefined(tile)) {
+      return returnVal; // not found
+    }
 
     var tileInfo = find(TileDescriptors, (tileDescriptor) => tileDescriptor.id == tile.gid);
 

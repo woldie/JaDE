@@ -121,7 +121,7 @@ class Init {
         new ResizePixiCanvas(this.pixiApp),
         new UpdateArea(this.display, this.PIXI, assets),
         new UpdateHero(this.display, this.PIXI, this.tiledUtils, this.textIo, assets),
-        new UpdateNpcs(assets, this.display, this.tiledUtils),
+        new UpdateNpcs(assets, this.display, this.tiledUtils, this.textIo),
         new CenterCamera(this.display, assets),
         new DebugCosmos()
       ]);

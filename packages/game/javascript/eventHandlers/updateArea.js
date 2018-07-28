@@ -41,7 +41,8 @@ export default class UpdateArea extends GameEventHandler {
       cosmos.playerState.currentArea = newAreaName;
       cosmos.actionsTaken.push(`${frameId} Area changed to '${newAreaName}'`);
 
-      // place NPC's
+      // reset the NPC states in the cosmos and place NPC's
+      cosmos.npcStates = [];
       var newMap = /** @type {PIXI.Container} */ newAreaAsset.areaMap;
       forEach(filter(newMap.objects, (obj) => obj.type === "npc"), (npcObj) => {
         var newNpc = new Npc();
