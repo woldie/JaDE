@@ -11,7 +11,7 @@ class TextIo {
      * @type {jQuery}
      */
     this.outputDiv = $(`<div class='outputBox'><div class='inner'>
-      Output goes here<br />... and here.
+      <span id="outputContent"></span><span id="outputNewLine"><br /></span>
     </div></div>`);
 
     /**
@@ -31,10 +31,45 @@ class TextIo {
      * @type {jQuery}
      */
     this.inputText = $(this.inputDiv).find("#inputText");
+
+    /**
+     * @private
+     * @name TextIo#outputNewLine
+     * @type {jQuery}
+     */
+    this.outputNewLine = $(this.outputDiv).find("#outputNewLine");
+
+    /**
+     * @name TextIo#outputScroll
+     * @type {jQuery}
+     */
+    this.outputScroll = $(this.outputDiv).find(".inner");
+
+    /**
+     * @name TextIo#outputContent
+     * @type {jQuery}
+     */
+    this.outputContent = $(this.outputDiv).find("#outputContent");
   }
 
   setInputText(html) {
     this.inputText.html(html);
+
+    this.outputContent.append(`<br />&raquo;&nbsp;${html}`);
+    this.outputNewLine.show();
+    this.outputScroll.scrollTop(function() { return this.scrollHeight; });
+  }
+
+  /**
+   * html will be automatically appended with a <br />
+   *
+   * @param {String} html
+   */
+  addOutputLine(html) {
+    this.inputText.html("");
+    this.outputNewLine.hide();
+    this.outputContent.append(`<br />${html}`);
+    this.outputScroll.scrollTop(function() { return this.scrollHeight; });
   }
 }
 

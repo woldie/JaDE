@@ -47,18 +47,28 @@ export default class Npc {
       hitPoints: 1,
       agro: 0,
       agroThreshold: 1/0,
-      agroTargets: []                       // sprite names of targets if NPC turns monster, can be other than Hero
+      agroTargets: [],                       // sprite names of targets if NPC turns monster, can be other than Hero
+      frameSet: "default",
+      currentFrame: 0
     };
 
     switch(npcType) {
       case "Peon":
         npcState.hitPoints = 120;           // Don't be mistaken, attacking the townsfolk is a bad idear
-        npcState.frameSet = "default";
-        npcState.currentFrame = 0;
         npcState.speed = 8;                 // update every 8 frames
         npcState.maxRadiusFromStart = 4;    // how many steps from startX/startY may the Peon walk
         npcState.agro = 0;                  // agro level, increments on any aggression
         npcState.agroThreshold = 1;         // any attacks on Peons cause them to turn monster
+        break;
+
+      case "Rat":
+        npcState.hitPoint = 6;
+        npcState.speed = 10;                // update every 10 frames
+        npcState.maxRadiusFromStart = 1/0;
+        npcState.agro = 1;                  // immediately make him agro
+        npcState.agroThreshold = 0;
+        npcState.isMonster = true;
+        npcState.monsterStrategy = "Creepy";
         break;
     }
 
