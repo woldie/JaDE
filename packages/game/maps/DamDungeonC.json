@@ -40,6 +40,54 @@
                  "width":0,
                  "x":1423,
                  "y":10
+                }, 
+                {
+                 "height":0,
+                 "id":3,
+                 "name":"Bat",
+                 "point":true,
+                 "rotation":0,
+                 "type":"NPC",
+                 "visible":true,
+                 "width":0,
+                 "x":797,
+                 "y":137
+                }, 
+                {
+                 "height":0,
+                 "id":4,
+                 "name":"Bat",
+                 "point":true,
+                 "rotation":0,
+                 "type":"NPC",
+                 "visible":true,
+                 "width":0,
+                 "x":927,
+                 "y":48
+                }, 
+                {
+                 "height":0,
+                 "id":6,
+                 "name":"Rat",
+                 "point":true,
+                 "rotation":0,
+                 "type":"NPC",
+                 "visible":true,
+                 "width":0,
+                 "x":176,
+                 "y":98
+                }, 
+                {
+                 "height":0,
+                 "id":7,
+                 "name":"Rat",
+                 "point":true,
+                 "rotation":0,
+                 "type":"NPC",
+                 "visible":true,
+                 "width":0,
+                 "x":379,
+                 "y":166
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -47,7 +95,7 @@
          "x":0,
          "y":0
         }],
- "nextobjectid":3,
+ "nextobjectid":16,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.1.5",
