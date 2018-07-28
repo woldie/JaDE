@@ -72,6 +72,6 @@ export default class UpdateNpcs extends GameEventHandler {
   }
 
   processAsMonster(currentArea, npcState, npcSprite, cosmos, frameId) {
-    this.textIo.addOutputLine("EEEEK MONSTER!!");
+    // check to see if hero is surrounding
   }
 }
