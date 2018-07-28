@@ -1,4 +1,5 @@
-{ "height":56,
+{ "backgroundcolor":"#00ffff",
+ "height":56,
  "infinite":false,
  "layers":[
         {
@@ -168,19 +169,19 @@
  "nextobjectid":18,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.1.6",
+ "tiledversion":"1.1.5",
  "tileheight":32,
  "tilesets":[
         {
          "columns":12,
          "firstgid":1,
          "image":"..\/tilesets\/Scavengers.png",
-         "imageheight":64,
+         "imageheight":96,
          "imagewidth":384,
          "margin":0,
          "name":"Scavengers",
          "spacing":0,
-         "tilecount":24,
+         "tilecount":36,
          "tileheight":32,
          "tilewidth":32
         }],
