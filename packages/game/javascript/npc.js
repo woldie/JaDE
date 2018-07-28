@@ -61,6 +61,8 @@ export default class Npc {
         npcState.agroThreshold = 1;         // any attacks on Peons cause them to turn monster
         break;
 
+      case "Spider":
+      case "Bat":
       case "Rat":
         npcState.hitPoint = 6;
         npcState.speed = 10;                // update every 10 frames

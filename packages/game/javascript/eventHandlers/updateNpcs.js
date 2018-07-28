@@ -3,6 +3,7 @@ import find from "lodash.find";
 
 import GameEventHandler from "./gameEventHandler";
 import Utils from "../utils";
+import Constants from "../constants";
 
 export default class UpdateNpcs extends GameEventHandler {
   /**
@@ -72,6 +73,16 @@ export default class UpdateNpcs extends GameEventHandler {
   }
 
   processAsMonster(currentArea, npcState, npcSprite, cosmos, frameId) {
+    var currentAreaMap = currentArea.areaMap;
+    var spritesLayer = currentAreaMap.getObject("Sprites");
+    var heroSprite = find(spritesLayer.children, (child) => child.name === Constants.HERO);
+
     // check to see if hero is surrounding
+    var surroundingSprites = this.tiledUtils.getSurroundingSpritesAtCoords(currentArea,
+      npcState.x, npcState.y);
+
+    if(find(surroundingSprites, (surroundingSprite) => surroundingSprite.id == heroSprite.id)) {
+      this.textIo.addOutputLine(`<span style="color: red">${npcState.name} uses bite attack for ${Math.floor(20 * Math.random())}!`);
+    }
   }
 }

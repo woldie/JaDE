@@ -84,6 +84,22 @@ function provideTiledUtils() {
     return returnVal;
   };
 
+  tiledUtils.getSurroundingSpritesAtCoords = function(mapAsset, x, y) {
+    var sprites = mapAsset.areaMap.getObject("Sprites").children;
+    var adjacentSprites = filter(sprites, (sprite) =>
+      (sprite.x === x-32 && sprite.y === y-32) ||
+      (sprite.x === x && sprite.y === y-32) ||
+      (sprite.x === x+32 && sprite.y === y-32) ||
+      (sprite.x === x-32 && sprite.y === y) ||
+      (sprite.x === x+32 && sprite.y === y) ||
+      (sprite.x === x-32 && sprite.y === y+32) ||
+      (sprite.x === x && sprite.y === y+32) ||
+      (sprite.x === x+32 && sprite.y === y+32)
+    );
+
+    return adjacentSprites;
+  };
+
   return tiledUtils;
 }
 

@@ -28,10 +28,11 @@ var tileDescriptors = [
     {id : 24, name : "Crate", walkable : false, seethrough : true},
     {id : 25, name : "Dam Walkway", walkable : true, seethrough : true},
     {id : 26, name : "Dam Walkway Side", walkable : true, seethrough : true},
-    {id : 27, name : "Dam Walkway Corner Left", walkable : true, seethrough : true},
-    {id : 28, name : "Dam Walkway Corner Right", walkable : true, seethrough : true},
-    {id : 29, name : "Dam Walkway Top Corner Right", walkable : true, seethrough : true},
-    {id : 30, name : "Alien Scout", walkable :true, seethrough : true},
+    {id : 27, name : "Dam Walkway Top Corner Left", walkable : true, seethrough : true},
+    {id : 28, name : "Dam Walkway Corner Left", walkable : true, seethrough : true},
+    {id : 29, name : "Dam Walkway Corner Right", walkable : true, seethrough : true},
+    {id : 30, name : "Dam Walkway Top Corner Right", walkable : true, seethrough : true},
+    {id : 31, name : "Alien Scout", walkable :true, seethrough : true},
 
 ];
 export default tileDescriptors;

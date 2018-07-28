@@ -3,6 +3,7 @@ import filter from "lodash.filter";
 import find from "lodash.find";
 import startsWith from "lodash.startswith"
 import isUndefined from "lodash.isundefined"
+import remove from "lodash.remove"
 
 import MapAsset from "../assets/mapAsset";
 import GameEventHandler from "./gameEventHandler";
@@ -162,6 +163,24 @@ export default class UpdateHero extends GameEventHandler {
     if(isActionFrame) {
       var tileInfo;
 
+      var desiredX = heroSprite.x;
+      if(cosmos.playerState.left) {
+        desiredX -= 32;
+      }
+      if(cosmos.playerState.right) {
+        desiredX += 32;
+      }
+
+      var desiredY = heroSprite.y;
+      if(cosmos.playerState.up) {
+        desiredY -= 32;
+      }
+      if(cosmos.playerState.down) {
+        desiredY += 32;
+      }
+
+      this.tryToKillSprite(currentArea, heroSprite, desiredX, desiredY, cosmos);
+
       if (cosmos.playerState.up) {
         tileInfo = this.tiledUtils.getGroundAttributeAtCoords("walkable", currentArea, heroSprite.x, heroSprite.y - 32);
         if (isTruthy(tileInfo.value)) {
@@ -217,6 +236,24 @@ export default class UpdateHero extends GameEventHandler {
     cosmos.playerState.y = heroSprite.y;
 
     return actionTaken;
+  }
+
+  tryToKillSprite(currentArea, heroSprite, desiredX, desiredY, cosmos) {
+    var surroundingSprites = this.tiledUtils.getSurroundingSpritesAtCoords(currentArea, heroSprite.x, heroSprite.y);
+
+    var spriteOnDesiredSpot = find(surroundingSprites, (surroundingSprite) =>
+        surroundingSprite.x === desiredX && surroundingSprite.y === desiredY);
+
+    if(spriteOnDesiredSpot) {
+      var npcState = find(cosmos.npcStates, (npcState) => npcState.x === spriteOnDesiredSpot.x && npcState.y === spriteOnDesiredSpot.y);
+
+      if(npcState.isMonster) {
+        this.textIo.addOutputLine(`<span style="color: blue">HERO</span> attacks ${npcState.name} for ${Math.floor(40 * Math.random())} and kills it!`);
+
+        remove(cosmos.npcStates, (npcState) => npcState.x === spriteOnDesiredSpot.x && npcState.y === spriteOnDesiredSpot.y);
+        spriteOnDesiredSpot.destroy();
+      }
+    }
   }
 
   initPlayerStateIfNecc(cosmos) {
